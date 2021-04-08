@@ -38,3 +38,35 @@ print()
 print("Let us see what happens to an arbitrary shape as such")
 for k in range(10,0,-1):
     print(-k,"< x,y <",k,monteCarloIntegration(someShape,5,k,k))
+
+# Area decreases below a certain stencil (i.e. grid size)
+# So I am writing a function below which automatically figures out
+# this grid size ....
+
+def adaptiveMCintegration(f,c):
+    Lx, Ly = 10*c, 10*c
+    N1 =  0
+    A2, A3, A4 = 0, 0, 0
+    while True:
+        N1 = N1 + 1
+        area = monteCarloIntegration(f,c,Lx,Ly)
+        Lx = Lx - 0.01*c
+        Ly = Ly - 0.01*c
+        if N1 == 1: A1 = area
+        elif N1 == 2:
+            A2 = A1
+            A1 = area
+        elif N1 == 3:
+            A3 = A2
+            A2 = A1
+            A1 = area
+        else:
+            A4 = A3
+            A3 = A2
+            A2 = A1
+            A1 = area
+            if A4>A3 and A3>A2 and A2>A1: break   
+    return A4
+
+print("Diamond area using Monte Carlo integration ....")
+print(adaptiveMCintegration(diamond,4)) 
