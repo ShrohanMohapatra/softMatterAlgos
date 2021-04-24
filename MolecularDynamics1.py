@@ -41,7 +41,7 @@ def TotalInternalEnergy(box): # Total internal energy
                 )
     return sum1
 # Now begins the simulation
-Np = 2000 # Number of particles
+Np = 100 # Number of particles
 Lx = 0.70 # Length of the box
 Ly = 0.75 # Width of the box
 Lz = 0.80 # Breadth of the box
@@ -52,7 +52,7 @@ box = boxOfParticles(Np,Lx,Ly,Lz)
 delta = 0.12 # The range of collisions
 Etotal = TotalInternalEnergy(box) # Total Internal Energy
 kB = 1.38*10**(-23) # Boltzmann constant
-Nstep = 1000 # Number of steps
+Nstep = 10 # Number of steps
 for y in range(Nstep):
     i = randint(0,Np-1)
     xi_next = [
@@ -81,4 +81,12 @@ for y in range(Nstep):
         if threshold<exp(-delE/kB/T):
             for k in range(3): box[i]['r'][k] = xi_next[k]
             Etotal = E1total
-    pprint(box)
+    # pprint(box)
+    x1 = [box[i]['r'][0] for i in range(Np)]
+    y1 = [box[i]['r'][1] for i in range(Np)]
+    z1 = [box[i]['r'][2] for i in range(Np)]
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter3D(x1,y1,z1)
+    plt.savefig('plot'+str(y)+'.png', dpi=300, bbox_inches='tight')
+    print('Figure no.'+str(y)+' done')
