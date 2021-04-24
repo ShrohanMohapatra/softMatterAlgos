@@ -1,6 +1,8 @@
 # the monte carlo molecular dynamics for vaporized NaCl
-from math import sqrt
+from math import sqrt,exp
 from random import random, randint
+from pprint import pprint
+from matplotlib import pyplot as plt
 def potentialU(q1,q2,r1,r2):
     e = 1.6*10**(-19) # Charge of the electron
     eps0 = 8.85*10**(-12) # Permittivity of vaccuum
@@ -8,7 +10,7 @@ def potentialU(q1,q2,r1,r2):
     U = q1*q2*e**2
     U = U/(4*pi*eps0)
     r12 = r1[0]**2 + r1[1]**2 + r1[2]**2
-    r12 = r2 + r2[0]**2 + r2[1]**2 + r2[2]**2
+    r12 = r12 + r2[0]**2 + r2[1]**2 + r2[2]**2
     r12 = sqrt(r12)
     U = U/r12
     return U
@@ -19,11 +21,15 @@ def boxOfParticles(Np,Lx,Ly,Lz):
     # Assign all the positively charged particles first
     for k in range(k1):
         box[k]['q'] = 1 # Charge
-        box[k]['r'] = [random()*Lx,random()*Ly,random()*Lz] # position of particle
+        box[k]['r'] = [
+            (random()-0.5)*Lx,(random()-0.5)*Ly,(random()-0.5)*Lz
+            ] # position of particle
     # Assign all the negatively charged particles first
     for k in range(k1,Np):
         box[k]['q'] = -1 # Charge
-        box[k]['r'] = [random()*Lx,random()*Ly,random()*Lz] # position of particle
+        box[k]['r'] = [
+            (random()-0.5)*Lx,(random()-0.5)*Ly,(random()-0.5)*Lz
+            ] # position of particle
     return box
 def TotalInternalEnergy(box): # Total internal energy
     sum1 = 0
@@ -35,15 +41,19 @@ def TotalInternalEnergy(box): # Total internal energy
                 )
     return sum1
 # Now begins the simulation
-Np = 250 # Number of particles
-Lx = 0.10 # Length of the box
-Ly = 0.15 # Width of the box
-Lz = 0.20 # Breadth of the box
+Np = 2000 # Number of particles
+Lx = 0.70 # Length of the box
+Ly = 0.75 # Width of the box
+Lz = 0.80 # Breadth of the box
+T = 1700 # Temperature in Kelvin
+# Boiling point of NaCl is 1686 K
 # Import the box of particles with randomly assigned positions.
 box = boxOfParticles(Np,Lx,Ly,Lz)
-delta = 0.02 # The range of collisions
+delta = 0.12 # The range of collisions
 Etotal = TotalInternalEnergy(box) # Total Internal Energy
-while True:
+kB = 1.38*10**(-23) # Boltzmann constant
+Nstep = 1000 # Number of steps
+for y in range(Nstep):
     i = randint(0,Np-1)
     xi_next = [
         box[i]['r'][0]+delta*(random()-0.5),
@@ -56,20 +66,19 @@ while True:
             E1total = E1total + potentialU(
                 box[j]['q'], box[i]['q'], box[j]['r'], xi_next
                 )
-    remainE = 0
     for k in range(Np):
         for m in range(Np):
             if k!=i and m!=k:
                 E1total = E1total + potentialU(
                 box[k]['q'], box[m]['q'], box[k]['r'], box[m]['r']
                 )
-                remainE = remainE + potentialU(
-                box[k]['q'], box[m]['q'], box[k]['r'], box[m]['r']
-                )
     delE = E1total - Etotal
     if delE<0:
         for k in range(3): box[i]['r'][k] = xi_next[k]
-        Etotal = delE + remainE
+        Etotal = E1total
     else:
-        threshold = 0
-        pass
+        threshold = random()
+        if threshold<exp(-delE/kB/T):
+            for k in range(3): box[i]['r'][k] = xi_next[k]
+            Etotal = E1total
+    pprint(box)
