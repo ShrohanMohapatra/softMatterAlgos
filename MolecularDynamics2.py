@@ -13,10 +13,14 @@
 # Chemical Physics, 2013
 # 2. "Shear viscosity of molten sodium chloride", J. Petravic, J. Delhommelle, 
 # Journal of Chemical Physics, 2003
+# 3. "Thermodynamic analysis of molecular dynamics simulation of evaporation
+# and condensation", E. A. T. van der Akken, A. J. H. Frijns, A. A. van 
+# Steenhoven, P. A. J. Hilbers, 5th European Thermal-Science Conference, 2006
 
 from math import sqrt
 from random import random
 from pprint import pprint
+from matplotlib import pyplot as plt
 def potentialU(q1,q2,r1,r2):
     e = 1.6*10**(-19) # Charge of the electron
     eps0 = 8.85*10**(-12) # Permittivity of vaccuum
@@ -83,7 +87,10 @@ Lz = Ly # Breadth of the box
 box = boxOfParticles(Np,Lx,Ly,Lz)
 delt = 10**(-12) # 1 ps between the successive time steps
 eta = 7.82*10**(-4) # dynamic viscosity of molten NaCl
-Nstep = 10 # Number of steps
+Nstep = 10000 # Number of steps
+kB = 1.38*(10**(-23)) # Boltzmann constant in J K^-1
+Temp = [] # Temperature plots
+UEInt = [] # Internal energy plots
 for k in range(Nstep):
     if k == 0:
         prev_r = [[box[i]['r'][j] for j in range(3)] for i in range(Np)]
@@ -115,6 +122,26 @@ for k in range(Nstep):
                 box[k1]['v'][k2] = (box[k1]['r'][k2]-prev_r[k1][k2])/(2*delt)
         for k1 in range(Np):
             for k2 in range(3): prev_r[k1][k2] = prev_r2[k1][k2]
-    print(k,'->')
-    pprint(box)
-    # Compute the Temperature and plot it with time ....
+    # Compute the Temperature and internal energy ....
+    KEcalc, UEcalc, work = 0, 0, 0
+    for k1 in range(Np):
+        for k2 in range(3):
+            KEcalc = KEcalc + 1/2*box[k1]['m']*box[k1]['v'][k2]**2
+        for k3 in range(Np):
+            if k3!=k1: UEcalc = UEcalc + potentialU(
+                box[k1]['q'],box[k3]['q'],box[k1]['r'],box[k3]['r']
+                )
+        force = dragF(eta,box[k1]['R'],box[k1]['v'])
+        work = work + force[0]*(box[k1]['r'][0]-prev_r[k1][0])
+        work = work + force[1]*(box[k1]['r'][1]-prev_r[k1][1])
+        work = work + force[2]*(box[k1]['r'][2]-prev_r[k1][2])
+    Temp.append(KEcalc/3/kB)
+    UEInt.append(KEcalc+UEcalc+work)
+plt.plot(Temp)
+plt.xlabel('Time steps')
+plt.ylabel('Temperature (in K)')
+plt.show()
+plt.plot(UEInt)
+plt.xlabel('Time steps')
+plt.ylabel('Total internal energy (in J)')
+plt.show()
