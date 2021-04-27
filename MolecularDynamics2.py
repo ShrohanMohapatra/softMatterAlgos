@@ -4,7 +4,7 @@
 #                                     University of Massachusetts, Amherst
 
 # The methodology uses Verlet integration technique ....
-# ri(t+del t) = 2ri(t) - 2ri(t-del t) + (del t)^2 fi(t)/m
+# ri(t+del t) = 2ri(t) - ri(t-del t) + (del t)^2 fi(t)/m
 # vi(t) = (ri(t+del t)-ri(t-del t))/(2 del t)
 # fi = sum_{j} (q_i q_j e^2)/(4 pi eps_0 |r_ij|^3) r_ij - 6 pi mu Ri vi
 # Here for molten NaCl I am borrowing some data from the following papers:
