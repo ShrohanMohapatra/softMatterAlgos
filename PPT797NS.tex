@@ -1,0 +1,193 @@
+\documentclass{beamer}
+\usetheme{Boadilla}
+\usepackage{enumerate,graphicx,amsmath,amssymb}
+\title{Stochastic multiscale modeling of metal foams}
+\subtitle{by Liebscher, Proppe, Redenbach and Schwarzer
+\\(A short review on the method of computation)}
+\author{Shrohan Mohapatra, Department of Physics}
+\institute{University of Massachusetts, Amherst}
+\date{\today}
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+\begin{frame}
+\begin{figure}
+\includegraphics[scale=0.25]{PaperImage1_copy.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{What's a metal foam?}
+According to Wikipedia, a "metal foam is a cellular structure consisting of a solid metal with gas-filled pores comprising a large portion of the volume".
+\end{frame}
+\begin{frame}
+\frametitle{Open-cell and closed-cell foams}
+\begin{enumerate}
+	\item The characteristic property that identifies metal foams (or foams in general) is \textbf{porosity}, i.e. the volume fraction of the 'pores' that \textit{do not contain} the substrate against that of the metal itself.
+	\item The broad categorisation is based on porosity or the shape of the microstructure.
+	\item In open-cell foams, the cells or the pores are connected by "thin" layers of metal. Equivalently, the volume fraction of the gas to metal is \textit{very close to one}.
+	\item In closed-cell foams, the cells or the pores are \textit{disconnected} by "thick" layers of metal. Equivalently, the volume fraction of the gas to metal is \textit{infinitesimal}.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Representative and stochastic volume element}
+\begin{enumerate}
+	\item A representative volume element is a characteristic of any periodically recurring microstructure, be it foams (as is the case of interest of this paper), or for that matter, solids with periodic potential (referred to as unit cells in solid state physics or control volume element in continuum mechanics).
+	\item A stochastic volume element is one that fails to repeat itself for a long range of neighbourhood near itself in this space/bulk of the substrate/solid.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{What is this paper all about?}
+\begin{enumerate}
+	\item The authors primarily aim to compute the eigenfrequency of the structures from metal foams, and the generic elastic properties such as shear modulus, bulk modulus etc.
+	\item But intuitionally too, I asked myself: "How are the eigenfrequencies and elastic properties of a material related?"
+	For example, the relationship between the Young's modulus from flexural vibration for circular section
+	\begin{equation}
+		E = 1.6067 \frac{D^3}{L^4} m f^2 T_1
+	\end{equation}
+	where $E$ is the Young's modulus, $L$ and $D$ being the length and the diameter of the rod respectively, $m$ being the mass, $f$ being the resonance frequency for flexion and $T_1$ being a correction factor for the fundamental flexural mode related to $D$, $L$ and $\mu$, the Poisson's ratio. (References available in the next slide ....)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some references}
+\begin{enumerate}
+	\item ASTM (American Society for Testing and Materials) E1876-15, "Standard Test Method for Dynamic Young's Modulus, Shear Modulus, and Poisson's Ratio by Impulse Excitation of Vibration", ASTM International, West Conshohocken, PA, USA 2015
+	\item ASTM E1875, "Standard Test Method for Dynamic Young’s Modulus, Shear Modulus, and Poisson’s Ratio by Sonic Resonance", ASTM International, West Conshohocken, PA, USA, 2013
+	\item ASTM C215-19, "Standard Test Method for Fundamental Transverse, Longitudinal, and Torsional Resonant Frequencies of Concrete Specimens", ASTM International, West Conshohocken, PA, USA, 2019
+	\item O. A. Quaglio, J. M. da Silva, E. da Cunha Rodovalho, L. de Vilhena Costa, "Determination of Young's Modulus by Specific Vibration of Basalt and Diabase", Advances in Materials Science and Engineering, vol. 2020, Article ID 4706384, 8 pages, 2020
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{What is this paper all about?}
+\begin{enumerate}
+	\item This paper describes a computational model that virtually performs a numerical experiment to explore the linear elastic properties of the metal foams from the images obtained from CT (computed tomography) scans.
+	\item In literature until then, there was a lot of interest towards microstructure models with finite element methods which included techniques such as tessellations.
+	\item But the issue lies in the heterogeneity of the representative volume element in the microstructures of metal foams, one eventually resorts to methodologies based on stochastic volume elements.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{What is this paper all about?}
+\begin{enumerate}
+	\item This paper introduces a simple yet unique adaptation of what one knows as the "stochastic finite element method".
+	\item My pivotal place of motivation in this paper lied in the integration of the geometric ramification needed in FEM along with the stochastic portrayal of the microstructure.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{The basic strategy of the method; the algorithm}
+\begin{figure}
+\includegraphics[scale=0.5]{PaperImage2_copy.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Results from the CT scan}
+\begin{figure}
+\includegraphics[scale=0.5]{PaperImage3_copy.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Microstructure generation and determining linear properties ....}
+\begin{enumerate}
+	\item As discussed before, owing to the variation in the cells, it is useful to resort to the stochastic volume element (SVE).
+	\item
+		\begin{figure}
+		\includegraphics[scale=0.35]{PaperImage4_copy.png}
+		\end{figure}
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\frametitle{Microstructure generation and determining linear properties ....}
+\begin{enumerate}
+	\item The centres of the the Laguerre spheres are generated by the Poisson process having known the mean or average number of cells per unit volume.
+	\item The log-normal distribution of the radii of the cells perfectly fitted those in the image.
+	\item
+		\begin{figure}
+		\includegraphics[scale=0.30]{PaperImage5_copy.png}
+		\end{figure}
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\frametitle{Microstructure generation and determining linear properties ....}
+\begin{enumerate}
+	\item
+		\begin{figure}
+		\includegraphics[scale=0.35]{PaperImage6_copy.png}
+		\end{figure}
+	\item The next step, briefly, involves the generation of the foam model using some morphological operations. (references available in the next slide ...)
+	\item Mesoscopic volume elements are created and loaded by boundary conditions yielding an upper (kinematic uniform boundary conditions, KUBC) and a lower bound (static uniform boundary conditions, SUBC) for the compliance tensor $S$ ($\epsilon_{ij} = S_{ijkl} \sigma_{kl}$).
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some references on the morphological operations}
+\begin{enumerate}
+	\item Kanaun S, Tkachenko O., "Effective conductive properties of open-cell foams", International Journal of Engineering Science, 2008;46:551–571
+	\item Soille P., "Morphological image analysis", Springer Verlag, 1999
+	\item Liebscher A, Redenbach C., "Statistical analysis of the local strut thickness of open cell foams", Image Analysis \& Stereology, 2013
+	\item Jang WY, Kraynik A, Kyriakides S., "On the microstructure of open-cell foams and its effect on elastic properties", International Journal of Solids and Structures, 2008;45:1845–1875
+	\item Kanaun S, Tkachenko O., "Mechanical properties of open cell foams: simulations by Laguerre tessellation procedure", International Journal of Fracture, 2006;140:305–312.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Estimating statistical averages}
+\begin{figure}
+\includegraphics[scale=0.35]{PaperImage7_copy.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Estimating statistical averages}
+\begin{figure}
+\includegraphics[scale=0.5]{PaperImag8_copy.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Kahrunen-Loeve transform}
+\text{According to Wikipedia, "in case of a centered stochastic process } X_t_{,t\in[a,b]}, (E[X_t] = 0 \forall t \in [a,b]) \text{ satisfying a technical continuity condition, } X_t \text{ admits }\\  \text{a decomposition"}, \\
+\begin{equation}
+X_t = \sum_{k=1}^{\infty} Z_k e_k(t)
+\end{equation}
+\text{where }Z_k\text{ are pairwise uncorrelated random variables and the functions }\\ e_k(t)
+ \text{ are continuous real-valued functions on }[a,b] \text{ that are pairwise}\\ \text{ orthogonal in }L^2[a,b]"
+\end{frame}
+
+\begin{frame}
+\frametitle{Random field representation}
+\begin{figure}
+\includegraphics[scale=0.35]{PaperImage9_copy.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Simulation v/s experiment}
+\begin{figure}
+\includegraphics[scale=0.5]{PaperImage10_copy.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Some concluding remarks and advertisements}
+\begin{enumerate}
+	\item So is the method 'good' or 'bad': Rather subjective.
+	\item It's good because the treatment of the inherent randomness of the system in question has been captured well.
+	\item It's not clear whether they have repeated the 'numerical experiment' several times before being assured of the correctness of the verification.
+	\item Also, personal questions whether it is better than using the same scheme with the randomness along with the finite difference grid; comparing the time and space complexity of the FDA and FEA??
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\frametitle{Some concluding remarks and advertisements}
+\begin{enumerate}
+	\item Survey paper on stochastic FEA: "Practical Application of the Stochastic Finite Element Method" by Jose D. A. Mena (Oak Ridge National Lab), L. Margetts (University of Manchester), P. Mummery (University of Manchester)
+	\item I am developing a repository \textit{ShrohanMohapatra/softMatterAlgos} with all of my attempts to code all the schemes discussed in the class such as Monte Carlo, molecular dynamics, Brownian dynamics, SCFT (for a dilute homopolymer solution) etc.
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\begin{center}
+Thank you!!!
+\end{center}
+\end{frame}
+\end{document}
