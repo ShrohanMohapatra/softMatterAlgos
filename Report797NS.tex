@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage{enumerate,graphicx,amsmath,amssymb}
+\title{Stochastic multiscale modeling of metal foams
+\\ by Liebscher, Proppe, Redenbach and Schwarzer (2012) \cite{originalpaper}
+\\ (A short review on the method of computation)}
+\author{Shrohan Mohapatra, Department of Physics
+\\ University of Massachusetts, Amherst}
+\date{\today}
+\begin{document}
+\maketitle
+\section*{Answering the questions here ....}
+\begin{enumerate}
+	\item \textbf{What is soft matter system studied in the paper?}\\
+	In this paper, the system of interest in metal foams, which is not exactly "soft matter" but the technique being extends to any soft matter system with pores such as sponges, liquid foams formed in beer, shaving cream, lather etc. The stochastic method used in the case of metal foams here fits to the governing equations, but the algorithm can be applied to various other situations such as those mentioned in \cite{surveypaper}. The invariability of the method is owing to the fact that metal foams have a substrate characterised by high rigidity which happens to be the result of the numerical experiment; and also because of the fact that the parent method FEA happens to be applicable in many such situations as discussed in the lectures. \\ \\
+	According to Wikipedia \cite{WikipediaLink}, a "metal foam is a cellular structure consisting of
+a solid metal with gas-filled pores comprising a large portion of the volume". Some metal foams (or foams in general) are open-celled (the volume of the pores is larger than the volume of the metal in the complete occupancy) and close-celled (the volume of the metal substrate is larger than the volume of the foam).
+	\item \textbf{What is the central scientific question(s) studied in the paper as a whole?}\\
+	Until then, the computation of the vibrational behaviour of metal foams that comes from the elastic properties used to rely on the experimental viewpoint of the system which is independent of what one observes from the microstructure, in turn obtained from the computed tomography (CT) scans. This approach does not account for tunability of parameters pertaining to the microstructure geometry. So that's why they want to figure out a way to calculate the elastic properties and vibrational frequencies of metal foams from the CT image.
+	\item \textbf{What type of computational method/simulation is used in the study?}\\
+	This paper successfully combines the essence of Monte Carlo methods (using randomness to sample instances of the problem which majorly contribute to the approximately close result) and the finite element method (where a well-organised and preferably symmetric grid/mesh is laid over the space/region of interest and numeric integration is carried out through 'computational assimilation'): a unique adaptation known as the "stochastic finite element method". Apart from the application to study of metal foams mentioned in this paper \cite{originalpaper}, there are lots of other application areas to soft matter systems such as polymer nanocomposites, steel bridge designs, hip implants, modelling of thoracic aortic aneurysm wall close to the heart etc. in the survey \cite{surveypaper}.
+	\item \textbf{Describe the model that is used. Are there key assumptions that are made (i.e. where do the parameter values come from and/or what are approximations used in the computational
+methods)?}
+	The inherent assumption in designing/proposing the model in the paper is that the pores can be randomly large and randomly sized all across the volume of the metal foam. So the model that is being used works in the following stages:
+	\begin{enumerate}
+		\item The CT image of the foam is taken and the geometrical properties (both macroscopic and microscopic) are obtained using the digital image analysis(es).
+		\item Using these statistical description of the geometry, a Laguerre tessellation is performed with the pores being modelled/assumed as spheres with log-normally distributed radii and Poisson-distributed centres (with the mean number of the cells per unit volume obtained from the analysis of the CT image).
+		\item Then the resulting mesh is morphologically touched upon to introduce the random boundaries/edges (some of the edges might be broken) using some of the operations/standard procedures mentioned in \cite{morphology1, morphology2, morphology3, morphology4, morphology5}. Then the finite element method is brought to the case by applying the appropriate boundary conditions (which the authors do not describe much about).
+		\item Then one obtains the macroscopic quantities of the metal foams such as density, shear, bulk and Young's modulus. Also, to be able to obtain the eigenfrequencies of vibrations, one needs to compute the autocorrelation functions of the stress moduli of elasticity. The next step of computation is different from standard relationships between the moduli and frequencies, examples of which are mentioned in \cite{freqMod1, freqMod2, freqMod3}.
+		\item The eigenfunctions and eigenvalues of the Fredholm integral of the autocorrelation functions are plugged into the Kahrunen-Loeve transform, which according to Wikipedia \cite{WikipediaLink2}, "in case of a centered stochastic process $X_{t,t\in[a,b]}, (E[X_t] = 0 \forall t \in [a,b])$ satisfying a technical continuity condition, $X_t$ admits a decomposition",
+\begin{equation}
+X_t = \sum_{k=1}^{\infty} Z_k e_k(t)
+\end{equation}
+where $Z_k$ are pairwise uncorrelated random variables and the functions $e_k(t)$ are continuous real-valued functions on $[a,b]$ that are pairwise orthogonal in $L^2[a,b]$". Now due to these uncorrelated random variables, one needs to algorithmically fit this into the standard Monte-Carlo scheme here \cite{originalpaper}.
+	\end{enumerate}
+	At the end of the description of the model, the results are being compared with the experimental results to minimally validate the working of this model.
+	\item \textbf{What is the central question that is being addressed with the simulation/computation?}\\
+	The stochastic finite element methods answer the problem catering to the randomness in the geometry of the system instead of having to rely on one single homogenous geometry, as in the latter case, you would have to lay out many such small similar pieces in a larger grid which quintessentially serves as a computational bottleneck.
+	\item \textbf{Summarize the key results of the simulation and the interpretation of these results by the authors.}\\
+	As a precursory answer to a future question (mentioned below), this paper serves a bit as a numerical experiment to the stochastic finite element algorithm suited to metal foams. The final results compare the first two bending modes of the duocel copper computed using randomised FEA to that actually obtained by experiment in the table 3 of \cite{originalpaper}. The numbers seem to agree quite nicely, while the deviations owe a lot to the simplification in the model, as stated by the authors. The simplifications have been discussed in some detail in question 4 as aforementioned.
+	\item \textbf{How would you classify the “mode of computational study” being used? I.e. is it “computational microscope”; “computational model” (i.e. direction prediction of experimental properties vs. changes in model); or a “numerical experiment” (i.e. a test of the theory via simulation)?}\\
+	I think I would categorise the study in this paper more as a 'computational model' which essentially uses the built model of the stochastic FEA into computing the elastic properties of the metal foam to finally compare it with the experimental values (a brief experimental description mentioned in the paper \cite{originalpaper}). Besides, the computational model performs a numerical experiment that establishes the methodology first, presents a proof of concept and then tests this 'theory' to compute the required physical properties.
+	\item \textbf{Why is computation/simulation being used? That is, what is the information that is being sought that can't be provided by any other way?}\\
+	The kind of the metal foam investigated in question happens to be of irregular nature: with randomly-sized (addressed by the log-normal distribution of the radii) and randomly-distributed (addressed by the Poisson distribution of the centres) pores all through the volume of the bar; bar-like structures arising from the Laguerre tessellations that more or less sets of the grid and further refining the grid closer to actuality by morphological operations. This substantiates the use of stochastic finite elements in many ways.
+	\begin{enumerate}
+		\item Use of representative/regular volume elements to the FEA wouldn't be able to encompasses the randomness/the irregularities of the metal foam. (i.e. if one were to look for the approximately repeating units, one would compromise on the 'reliable' size of the mesh grid, thus rendering it to be computationally intensive and irrelevant.)
+		\item Also, the uniform tessellations would otherwise not be able to adapt to the morphological irregularities of the edges or the non-porous metal substrate, which would affect the final result of the eigenfrequencies.
+	\end{enumerate}
+	\item \textbf{Provide your opinion about whether this study is “good use of simulation/computation” or a “bad use of simulation/computation”. Why (provide your critical reasoning)?}\\
+	At the risk of sounding a bit diplomatic and unbiased, the quality of use of simulation in this situation is rather subjective: on one hand, it answers the questions of how one modifies the standard textbook FEA to randomisations of the physical problem at hand in the form of a stochastic methodology; on the other, the paper does not present enough number of evidences over which this computational model was run (it just runs over one instance of Duocel copper, and that's it!!). As an opinion, I would suggest the authors running the same model over several other materials before approving of the correctness of the proposed algorithm. As a third, I would be slightly concerned at the computational expense (time/space complexity) of the simulation as to a similar version of stochastic finite-difference scheme. 
+\end{enumerate}
+\begin{thebibliography}{999}
+\bibitem{originalpaper}
+A. Liebscher, C. Proppe, C. Redenbach, C. Schwarzer, "Stochastic multiscale modeling of metal foams", IUTAM (International Union of Theoretical and Applied Mechanics) Symposium on Multiscale Problems in Stochastic Mechanics, 2012
+\bibitem{surveypaper}
+J. D. A. Mena, L. Margetts, P. Mummery, "Practical Application of the Stochastic Finite Element Method", Archives of Computational Methods in Engineering, 2014
+\bibitem{WikipediaLink}
+"Metal foam: Wikipedia, the free encyclopedia", https://en.wikipedia.org/wiki/Metal\_foam
+\bibitem{morphology1}
+Kanaun S, Tkachenko O., "Effective conductive properties of open-cell foams", International Journal of Engineering Science, 2008;46:551–571
+\bibitem{morphology2}
+Soille P., "Morphological image analysis", Springer Verlag, 1999
+\bibitem{morphology3}
+Liebscher A, Redenbach C., "Statistical analysis of the local strut thickness of open cell foams", Image Analysis \& Stereology, 2013
+\bibitem{morphology4}
+Jang WY, Kraynik A, Kyriakides S., "On the microstructure of open-cell foams and its effect on elastic properties", International Journal of Solids and Structures, 2008;45:1845–1875
+\bibitem{morphology5}
+Kanaun S, Tkachenko O., "Mechanical properties of open cell foams: simulations by Laguerre tessellation procedure", International Journal of Fracture, 2006;140:305–312
+\bibitem{freqMod1}
+ASTM (American Society for Testing and Materials) E1876-15, "Standard Test Method for Dynamic Young's Modulus, Shear Modulus, and Poisson's Ratio by Impulse Excitation of Vibration", ASTM International, West Conshohocken, PA, USA 2015
+\bibitem{freqMod2}
+ASTM E1875, "Standard Test Method for Dynamic Young’s Modulus, Shear Modulus, and Poisson’s Ratio by Sonic Resonance", ASTM International, West Conshohocken, PA, USA, 2013
+\bibitem{freqMod3}
+ASTM C215-19, "Standard Test Method for Fundamental Transverse, Longitudinal, and Torsional Resonant Frequencies of Concrete Specimens", ASTM International, West Conshohocken, PA, USA, 2019
+\bibitem{WikipediaLink2}
+"Kahrunen-Loeve transform: Wikipedia, the free encyclopedia", https://en.wikipedia.org/wiki/Karhunen–Loeve\_theorem
+\end{thebibliography}
+\end{document}
