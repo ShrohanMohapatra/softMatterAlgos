@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,graphicx}
+\title{Some elementary examples to finite element analysis of ODEs and PDEs}
+\author{Shrohan Mohapatra\\Department of Physics \\University of Massachusetts Amherst}
+\date{23 May 2021}
+\begin{document}
+\maketitle
+This article aims at introducing some essential practicing steps of the finite element method. I begin with a couple of examples that solve a Newtonian-like ODE with two different inhomogeneity functions but same boundary conditions. These examples are inspired from \cite{wikiguy1}
+\begin{equation}
+\frac{d^2 u}{d x^2} = f(x), u(x = 0) = u(x = 1) = 0
+\end{equation}
+The functions I take in this article for simulation includes $f(x) = x-x^3$ and $f(x) = x+x^3$, simulated in Mathematica 11 \cite{simula1, simula2}. The weak formulation of the above equation leads to the following: for every function $v: [0,1] \rightarrow \mathbb{R}$ such that $v(0) = v(1) = 0$,
+\begin{flalign*}
+\int_{x=0}^{x=1} \frac{d^2 u}{d x^2} v(x) dx = \int_{x=0}^{x=1} f(x) v(x) dx
+\end{flalign*}
+\begin{flalign*}
+\rightarrow \frac{d u}{d x} v(x)\bigg|_{x=0}^{x=1} - \int_{x=0}^{x=1} u'(x) v'(x) dx = \int_{x=0}^{x=1} f(x) v(x) dx
+\end{flalign*}
+\begin{flalign*}
+\rightarrow \int_{x=0}^{x=1} -u'(x) v'(x) dx = \int_{x=0}^{x=1} f(x) v(x) dx
+\end{flalign*}
+So our job comes across as this: from a set $V = \{g(x): g:[0,1]\rightarrow \mathbb{R}, g(0)=g(1)=0\}$, one needs to find $u \in V$, such that $\forall v \in V$,
+\begin{equation} \label{eqn2}
+\int_{x=0}^{x=1} -u'(x) v'(x) dx = \int_{x=0}^{x=1} f(x) v(x) dx
+\end{equation}
+The central point of approximation in the finite element model is an approximate choice of a finite subset $V_{fin}$ of $V$. I took up two choices of such a subset, as you can see in \cite{simula1, simula2}
+\begin{equation}
+V_{fin}\big|_1 = \bigg\{ v_k(x) = \begin{cases}
+	-n^2\big(x-\frac{k-1}{n}\big)\big(x-\frac{k+1}{n}\big) & ,\frac{k-1}{n}\le x < \frac{k+1}{n} \\
+	0 & \text{,otherwise}
+\end{cases}, 1\le k\le n\bigg\}
+\end{equation}
+\begin{equation}
+V_{fin}\big|_2 = \bigg\{ v_k(x) = \begin{cases}
+	nx-k+1 & ,\frac{k-1}{n} < x \le \frac{k}{n} \\
+	k+1-nx & ,\frac{k}{n} < x \le \frac{k+1}{n} \\
+	0 & \text{,otherwise}
+\end{cases}, 1\le k\le n\bigg\}
+\end{equation}
+Note the choice of the basis as shown is an orthogonal basis, which gives an added advantage to the complexity of the algorithm. Since $u \in span(V)$, $\exists u_k, 1\le k \le n$, such that,
+\begin{flalign*}
+u(x) = \sum_{k=1}^{n} u_k v_k(x), u_k \in \mathbb{R}
+\end{flalign*}
+Thus, according to equation \ref{eqn2},
+\begin{equation} \label{eqn5}
+\sum_{m=1}^{m=n} u_m \int_{x=\frac{(k-1)}{n}}^{x=\frac{(k+1)}{n}} -v'_{m}(x)v'_{k}(x) dx = \int_{x=\frac{(k-1)}{n}}^{x=\frac{(k+1)}{n}} f(x) v_k(x) dx
+\end{equation}
+One can represent the equation \ref{eqn5} in the form of a problem to invert a matrix,
+\begin{flalign*}
+\Lambda_{k,m} = \int_{x=\frac{(k-1)}{n}}^{x=\frac{(k+1)}{n}} -v'_{m}(x)v'_{k}(x) dx, b_k = \int_{x=\frac{(k-1)}{n}}^{x=\frac{(k+1)}{n}} f(x) v_k(x) dx
+\end{flalign*}
+\begin{flalign*}
+\rightarrow \sum_{m=1}^{n} u_m \Lambda_{k,m} = b_k \rightarrow \Lambda\textbf{u} = \textbf{b} \rightarrow \textbf{u} = \Lambda^{-1} \textbf{b}
+\end{flalign*}
+\begin{figure}
+\includegraphics[scale=0.42]{Vf1f1.pdf}
+\includegraphics[scale=0.42]{Vf1f2.pdf}
+\caption{\label{Vfin1} The above two figures are for the choice of basis $V_{fin,1}$ to solve for the equations $u''(x)=x-x^3$ and $u''(x)=x+x^3$. This seems to be a really bad choice as it is one order higher of the order of the integral equation \ref{eqn2} of the weak formulation.}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.45]{Vf2f1.pdf}
+\includegraphics[scale=0.45]{Vf2f2.pdf}
+\caption{\label{Vfin2} The above two figures are for the choice of basis $V_{fin,2}$ to solve for the equations $u''(x)=x-x^3$ and $u''(x)=x+x^3$. This seems to be a better choice as it matches the order of the integral equation \ref{eqn2} of the weak formulation.}
+\end{figure}
+In this choice example, I am trying to compare the numerical accuracy w.r.t to the actual analytical results for the following test cases.
+\begin{flalign*}
+u''(x) = x-x^3, u(0) = u(1) = 0 \rightarrow u(x) = \frac{x^3}{6} - \frac{x^5}{120} - \frac{7x}{60}
+\end{flalign*}
+\begin{flalign*}
+u''(x) = x+x^3, u(0) = u(1) = 0 \rightarrow u(x) = \frac{x^3}{6} + \frac{x^5}{120} - \frac{13x}{60}
+\end{flalign*}
+As you can see from figures \ref{Vfin1} and \ref{Vfin2}, the choice of orthogonal basis of functions should conform with the order of the ODE at hand. And also higher the number of functions in the basis, the more is the accuracy of the results.
+
+Similar is the procedure for a higher dimensional system in a partial differential equation. I will give an example of solving an electrostatics problem,
+\begin{equation}
+\frac{\partial^2 \phi}{\partial x^2} + \frac{\partial^2 \phi}{\partial y^2} = f(x, y), \phi(x,y) = 0 \forall \{x,y\} \in \Omega
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{wireMesh.pdf}
+\caption{\label{wireMesh} The mesh (similar to Delaunay triangulation) generated for the conveyor belt bound region of size $a$ and the radius of curvature $r_0$ at the corners.}
+\end{center}
+\end{figure}
+
+where $\Omega$ is the "conveyor-belt" region shown in figure \ref{wireMesh}. You can further notice in the figure \ref{wireMesh} from \cite{simula2} that there is a triangulation which serves as a mesh on which the FEA happens to work. This is the region over which the orthogonal basis of functions is chosen and the rest follows from the weak formulation \cite{wikiguy1}, that $\forall v \in V$
+\begin{flalign*}
+\int\int_{\Omega} f(x,y) v(x, y) = \int\int_{\Omega} v(x, y) \nabla^2 \phi(x, y) = \int\int_{\Omega} -\nabla v(x,y) \cdot \nabla \phi(x,y)
+\end{flalign*}
+Some of the results for $f(x,y) = -\frac{Q}{\epsilon_0} \delta(x)\delta(y)$ have been explored in \cite{simula1, simula2}.
+\begin{thebibliography}{999}
+\bibitem{wikiguy1}
+"Finite Element Method - Wikipedia, the free encyclopedia", https://en.wikipedia.org/wiki/Finite\_element\_method
+\bibitem{simula1}
+"softMatterAlgos", https://github.com/ShrohanMohapatra/softMatterAlgos
+\bibitem{simula2}
+"ElectrostaticsConveyorBelt", https://github.com/ShrohanMohapatra/\\ElectrostaticsConveyorBelt
+\end{thebibliography}
+\end{document}
