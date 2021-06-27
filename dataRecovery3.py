@@ -19,7 +19,7 @@ for (name, value) in model.parameters().items():
     description = model.description(name)
     print(f'{description:20}{name} = {value}')
 print(model.materials())
-print(model.physics())
+print('Physics used = ',model.physics())
 print(model.studies())
 print(model.parameter('r0'))
 print(model.datasets())
