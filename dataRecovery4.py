@@ -11,7 +11,7 @@ model = client.load('2DGeometryExample.mph')
 print(model.parameters())
 print('Start of the simulation')
 ReList = [10**(-5),10**(-4),10**(-3),10**(-2),10**(-1)]
-fileHandle = open('dataStorageFile.txt')
+fileHandle = open('dataStorageFile.txt','w')
 try:
     for Re in ReList:
         r0List = [(1.009*k-0.909)*Re for k in range(1,101)]
