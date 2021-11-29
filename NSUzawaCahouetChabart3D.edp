@@ -1,0 +1,118 @@
+load "msh3"
+// Parameters
+verbosity = 0;
+real D = 0.2;
+real H = 0.5;
+real cx0 = 0.3;
+real cy0 = 0.25; //center of cylinder
+int nn = 3; //TODO
+real reynoldsnum = 10;
+real Um = reynoldsnum*1e-6/D; //max velocity (driven by Reynold's number)
+real nu = 1e-6;
+func U1 = 4.*Um*y*(H-y)/(H*H); //Boundary condition
+func U2 = 0.;
+real T=2;
+real dt = D/nn/Um; //CFL = 1
+real epspq = 1e-10;
+real eps = 1e-6;
+// Variables
+func Ub = Um*2./3.; 
+real alpha = 1/dt; 
+real Rey = Ub*D/nu; 
+real t = 0.;
+// Mesh
+border fr1(t=0, 2.2){x=t; y=0; label=1;}
+border fr2(t=0, H){x=2.2; y=t; label=2;}
+border fr3(t=2.2, 0){x=t; y=H; label=1;}
+border fr4(t=H, 0){x=0; y=t; label=1;}
+border fr5(t=2*pi, 0){x=cx0+D*sin(t)/2; y=cy0+D*cos(t)/2; label=3;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn) + fr5(-nn*3));
+mesh3 Th2 = buildlayers(Th, nn, zbound=[0,D]);
+// Fespace
+fespace Mh(Th2, [P1]); 
+Mh p;
+fespace Xh(Th2, [P2]); 
+Xh u1, u2, u3;
+// Macro
+macro grad(u) [dx(u), dy(u), dz(u)] //
+macro div(u1, u2, u3) (dx(u1) + dy(u2) + dz(u3)) //
+// Problem
+varf von1 ([u1, u2, u3, p], [v1, v2, v3, q]) 
+	= on(3, u1=0, u2=0, u3 = 0) 
+	+ on(1, u1=U1, u2=U2, u3 = 0);
+//remark : the value 100 in next varf is manualy fitted, because free outlet.
+varf vA (p, q) = int3d(Th2)(grad(p)' * grad(q))
+    + int3d(Th2)(100*p*q);
+varf vM (p, q) = int3d(Th2, qft=qf2pT)(p*q)
+    + on(2, p=0);
+varf vu ([u1], [v1]) = int3d(Th2)(
+	alpha*(u1*v1)
+	+ nu*(grad(u1)' * grad(v1))
+    ) + on(1, 3, u1=0);
+varf vu1 ([p], [v1]) = int3d(Th2)(p*dx(v1)); 
+varf vu2 ([p], [v1]) = int3d(Th2)(p*dy(v1));
+varf vu3 ([p], [v1]) = int3d(Th2)(p*dz(v1));
+varf vonu1 ([u1], [v1]) = on(1, u1=U1) + on(3, u1=0); 
+varf vonu2 ([u1], [v1]) = on(1, u1=U2) + on(3, u1=0);
+varf vonu3 ([u1], [v1]) = on(1, u1=0) + on(3, u1=0);
+matrix pAM = vM(Mh, Mh); 
+matrix pAA = vA(Mh, Mh); 
+matrix AU = vu(Xh, Xh);
+matrix B1 = vu1(Mh, Xh);
+matrix B2 = vu2(Mh, Xh);
+matrix B3 = vu3(Mh, Xh);
+real[int] brhs1 = vonu1(0, Xh);
+real[int] brhs2 = vonu2(0, Xh);
+real[int] brhs3 = vonu3(0, Xh);
+varf vrhs1(uu, vv) = int3d(Th2)(convect([u1, u2], -dt, u1)*vv*alpha) + vonu1;
+varf vrhs2(v2, v1) = int3d(Th2)(convect([u1, u2], -dt, u2)*v1*alpha) + vonu2;
+varf vrhs3(v2, v1) = int3d(Th2)(convect([u1, u2], -dt, u2)*v1*alpha) + vonu3;
+// Uzawa function
+func real[int] JUzawa (real[int] & pp){ 
+	real[int] b1 = brhs1; 
+	b1 += B1*pp; 
+	real[int] b2 = brhs2; 
+	b2 += B2*pp;
+	real[int] b3 = brhs3;
+	b3 += B3*pp;
+	u1[] = AU^-1 * b1;
+	u2[] = AU^-1 * b2;
+	u3[] = AU^-1 * b3;
+	pp = B1'*u1[];
+	pp += B2'*u2[];
+	pp += B3'*u3[];
+	pp = -pp;
+	return pp; }
+// Preconditioner function
+func real[int] Precon (real[int] & p){ 
+	real[int] pa = pAA^-1*p;
+	real[int] pm = pAM^-1*p;
+	real[int] pp = alpha*pa + nu*pm; return pp;
+	}
+// Initialization
+p = 0;
+// Time loop
+int ndt = T/dt;
+for(int i = 0; i < ndt; ++i){
+	// Update
+    	brhs1 = vrhs1(0, Xh);
+    	brhs2 = vrhs2(0, Xh);
+    	brhs3 = vrhs3(0, Xh);
+	// Solve
+	int res = LinearCG(JUzawa, p[], precon=Precon, nbiter=100, verbosity=10, veps=eps);
+	assert(res==1);
+	eps = -abs(eps);
+	// Vorticity
+	plot([u1,u2,u3], value=true, fill=true, wait=0, nbiso=40);
+	// Update
+	dt = min(dt, T-t);
+	t += dt;
+	if(dt < 1e-10*T) break;
+	}
+// Plot
+plot([u1,u2,u3], value=true, fill=true, nbiso=40);
+// Display
+cout << "u1 max = " << u1[].linfty
+<< ", u2 max = " << u2[].linfty
+<< ", u3 max = " << u3[].linfty
+<< ", p max = " << p[].max << endl;
