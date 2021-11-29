@@ -1,0 +1,79 @@
+load "msh3"
+load "medit"
+
+// Parameters definition
+verbosity = 0;
+int nn=10;
+int Inlet = 1;
+int Outlet = 2;
+int Wall = 3;
+real r1 = 0.8; // Depth of the backward facing step
+real Rho = 1e3; // Density of the liquid
+real Mu = 1e-6; // Viscosity of the liquid
+real D = 1.00; // Size of the face
+real L = 1.00; // Size of the length
+real Re = 1e10; // Reynold's number of the flow
+real uMax = Mu*Re/Rho/L; // Maximum velocity of the flow
+cout<<"Max vel = "<<uMax<<endl;
+real dt = D/nn/uMax; //CFL = 1 (Courant–Friedrichs–Lewy condition)
+cout<<"time step"<<dt<<endl;
+real T=10*dt;
+func fx = 0.;
+func fy = 0.;
+func fz = 0.; // Force per unit volume
+
+// Mesh and border definition
+border fr1(t=0, L){x=t; y=0; label=Wall;}
+border fr2(t=0, D){x=L; y=t; label=Outlet;}
+border fr3(t=L, 0){x=t; y=D; label=Wall;}
+border fr4(t=D, 0){x=0; y=t; label=Inlet;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn));
+mesh3 Th2 = buildlayers(Th, nn, zbound=[0,D]);
+Th2 = trunc(Th2,((x<r1) |(y<r1)| (z<r1)), split=1, label=3);
+
+fespace Uh(Th2, [P2, P2, P2]);
+Uh [ux, uy, uz];
+Uh [upx, upy, upz];
+Uh [vx, vy, vz];
+
+fespace Ph(Th2, P1);
+Ph p;
+Ph q;
+
+//Macro
+macro grad(u) [dx(u), dy(u), dz(u)] //
+macro Grad(U) [grad(U#x), grad(U#y), grad(U#z)]//
+macro div(ux, uy, uz) (dx(ux) + dy(uy) + dz(uz)) //
+macro Div(U) div(U#x, U#y, U#z) //
+
+//Function
+func uIn = uMax;
+
+//Problem
+problem NS ([ux, uy, uz, p],[vx, vy, vz, q])
+	= int3d(Th2)(
+		  (Rho/dt) * [ux, uy, uz]' * [vx, vy, vz]
+		+ Mu * (Grad(u) : Grad(v))
+		- p * Div(v)
+		- Div(u) * q
+	)
+	- int3d(Th2)(
+		  (Rho/dt) * [convect([upx, upy, upz], -dt, upx), convect([upx, upy, upz], -dt, upy), convect([upx, upy, upz], -dt, upz)]' * [vx, vy, vz]
+		+ [fx, fy, fz]' * [vx, vy, vz]
+	)
+	+ on(Inlet, ux=uIn, uy=0., uz=0.)
+	+ on(Wall, ux=0., uy=0., uz=0.)
+	;
+
+// Time loop
+int nbiter = T / dt;
+for (int i = 0; i < nbiter; i++) {
+	// Update
+	[upx, upy, upz] = [ux, uy, uz];
+
+	// Solve
+	NS;
+	cout<<"Step "<<i;
+	//Plot
+	plot([ux, uy, uz], value=true, fill=true, wait=0, nbiso=40);
+}
