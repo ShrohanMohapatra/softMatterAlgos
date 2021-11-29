@@ -1,0 +1,129 @@
+//  Location:
+//
+//    http://people.sc.fsu.edu/~jburkardt/freefem_src/poiseuille/poiseuille.edp
+//
+//  Discussion:
+//
+//    Solve the Navier Stokes equations defining Poiseuille flow in a channel.
+//
+//    This example was adapted from code at
+//      https://modules.freefem.org/modules/stokes/
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    12 February 2021
+//
+cout << "\n";
+cout << "poiseuille:\n";
+cout << "  FreeFem++ version.\n";
+cout << "  Poiseuille flow through a channel.\n";
+//
+//  Parameters
+//
+real uMax = 10.;
+
+real Mu = 1.;
+
+func fx = 0.;
+func fy = 0.;
+//
+//  Geometry
+//
+int nn = 4;	//Mesh quality
+real L = 5.0;	//Pipe length
+real D = 1.0;	//Pipe height
+int Wall = 1;	//Pipe wall label
+int Inlet = 2;	//Pipe inlet label
+int Outlet = 3;	//Pipe outlet label
+//
+//                 Wall (y=D)
+//           ------------------------------
+//           :--->                        :
+// Inlet     :----->                      :  Outlet
+// (x=0)     :--->                        :  (x=L)
+//           ------------------------------
+//                 Wall (y=0)
+//
+border b1 ( t = 0.0, 1.0 ) { x=L*t;   y=0.0;   label=Wall; };
+border b2 ( t = 0.0, 1.0 ) { x=L;     y=D*t;   label=Outlet; };
+border b3 ( t = 0.0, 1.0 ) { x=L-L*t; y=D;     label=Wall; };
+border b4 ( t = 0.0, 1.0 ) { x=0.0;   y=D-D*t; label=Inlet; };
+
+int nnL = max ( 2.0, L * nn );
+int nnD = max ( 2.0, D * nn );
+//
+//  Build the mesh.
+//
+mesh Th = buildmesh ( b1 ( nnL ) 
+                    + b2 ( nnD ) 
+                    + b3 ( nnL ) 
+                    + b4 ( nnD ) );
+//
+//  Fespace
+//  Set the finite element velocity space to piecewise quadratics.
+//
+fespace Uh ( Th, [ P2, P2 ] );
+Uh [ux, uy];
+Uh [vx, vy];
+//
+//  Set the finite element pressure space to piecewise linears.
+//
+fespace Ph(Th, P1);
+Ph p;
+Ph q;
+//
+//  Macros
+//
+macro Gradient(u) [dx(u), dy(u)] //
+macro Divergence(ux, uy) (dx(ux) + dy(uy)) //
+//
+//  Define a function for the parabolic inflow velocity.
+//
+func uIn = uMax * (1.0-(y-D/2.)^2 / (D/2.)^2);
+//
+//  Problem:
+//  Solve for velocity u=(ux,uy) and pressure p,
+//  using test functions v=(vx,vy) and q,
+//  which zero out the following function.
+//
+problem S ( [ux, uy, p],[vx, vy, q])
+	= int2d(Th)(
+		  Mu * (
+			  Gradient(ux)' * Gradient(vx)
+			+ Gradient(uy)' * Gradient(vy)
+		)
+		- p * Divergence(vx, vy)
+		- Divergence(ux, uy) * q
+	)
+	- int2d(Th)(
+		  fx*vx + fy*vy
+	)
+	+ on ( Inlet, ux = uIn, uy = 0.0 )
+	+ on ( Wall, ux = 0.0, uy = 0.0 )
+	;
+//
+// Request the solution ( ux, uy, p )
+//
+S;
+//
+//  Plot the velocity vector field.
+//
+plot ( [ ux, uy ], nbarrow = 1, ps = "poiseuille_velocity.ps", 
+  cmm = "Poiseuille Velocity", wait = true );
+//
+//  Plot the pressure as color contours.
+//
+plot ( p, nbiso = 10, fill = true, ps = "poiseuille_pressure.ps", 
+  cmm = "Poiseuille Pressure" );
+//
+//  Terminate.
+//
+cout << "\n";
+cout << "poiseuille:\n";
+cout << "  Normal end of execution.\n";
+
+exit ( 0 );
