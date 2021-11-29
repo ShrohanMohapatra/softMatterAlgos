@@ -1,0 +1,21 @@
+load "msh3"
+load "medit"
+int nn=15;
+int Inlet = 1;
+int Outlet = 2;
+int Wall = 3;
+real cx0 = 0.6;
+real cy0 = 0.6;
+real cz0 = 0.6; // Center of the sphere
+real r1 = 0.7; // Radius of the sphere
+real D = 1.20; // Size of the face
+real L = 1.20; // Size of the length
+// Mesh and border definition
+border fr1(t=0, L){x=t; y=0; label=Wall;}
+border fr2(t=0, D){x=L; y=t; label=Outlet;}
+border fr3(t=L, 0){x=t; y=D; label=Wall;}
+border fr4(t=D, 0){x=0; y=t; label=Inlet;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn));
+mesh3 Th2 = buildlayers(Th, nn, zbound=[0,D]);
+Th2 = trunc(Th2,((x-cx0)^2+(y-cy0)^2+(z-cz0)^2>=r1^2), split=3, label=3);
+medit("cubeSurface",Th2);
