@@ -1,0 +1,665 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,graphicx,animate}
+\title{Emerging irregularities in the incompressible viscous flows by local advective vorticities}
+\author{Shrohan Mohapatra}
+\begin{document}
+\maketitle
+Let us first consider the 2D Navier-Stokes equations for large Froude number flows:
+\begin{equation} \label{eqn22}
+\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} = 0
+\end{equation}
+\begin{equation} \label{eqn23}
+\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y} + \frac{\partial p}{\partial x} - \nu \bigg(\frac{\partial^2 u}{\partial x^2} +\frac{\partial^2 u}{\partial y^2}\bigg) = 0
+\end{equation}
+\begin{equation} \label{eqn24}
+\frac{\partial v}{\partial t} + u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y} + \frac{\partial p}{\partial y} - \nu \bigg(\frac{\partial^2 v}{\partial x^2} +\frac{\partial^2 v}{\partial y^2}\bigg) = 0
+\end{equation}
+Eliminating pressure from the equations \ref{eqn23} and \ref{eqn24} in a similar prescription as of the 3D version gives,
+\begin{equation*}
+\frac{\partial^2 u}{\partial y \partial t} + \frac{\partial}{\partial y}\bigg(u \frac{\partial u}{\partial x}\bigg) + \frac{\partial}{\partial y}\bigg(u \frac{\partial v}{\partial y}\bigg) - \nu\frac{\partial}{\partial y}\bigg(\frac{\partial^2 u}{\partial x^2}+\frac{\partial^2 u}{\partial y^2}\bigg) - 
+\end{equation*}
+\begin{equation} \label{eqn25}
+\bigg[\frac{\partial^2 v}{\partial x \partial t} + \frac{\partial}{\partial x}\bigg(u \frac{\partial v}{\partial x}\bigg) + \frac{\partial}{\partial x}\bigg(v \frac{\partial v}{\partial x}\bigg) - \nu\frac{\partial}{\partial x}\bigg(\frac{\partial^2 v}{\partial x^2}+\frac{\partial^2 v}{\partial y^2}\bigg)\bigg] = 0
+\end{equation}
+From equation \ref{eqn22} we can expect that there exists $\psi : \mathbb{R} \to \mathbb{R}$, such that $u = \frac{\partial \psi}{\partial y}$ and $v = -\frac{\partial \psi}{\partial x}$, which reduces  equation \ref{eqn25} to,
+\begin{equation*}
+\frac{\partial}{\partial t}(\nabla^2 \psi) - \nu \nabla^4 \psi + \frac{\partial \psi}{\partial y} \frac{\partial}{\partial x}(\nabla^2 \psi) - \frac{\partial \psi}{\partial x} \frac{\partial}{\partial y}(\nabla^2 \psi) = 0
+\end{equation*}
+\begin{equation} \label{eqn26}
+\implies \frac{\partial}{\partial t}(\nabla^2 \psi) = \nu \bigg(\frac{\partial^3 u}{\partial x^2 \partial y}+\frac{\partial^3 u}{\partial y^3}-\frac{\partial^3 v}{\partial x^3}-\frac{\partial^3 v}{\partial x \partial y^2}\bigg) - v \frac{\partial^2 u}{\partial y^2} + v \frac{\partial^2 v}{\partial x \partial y} - u \frac{\partial^2 u}{\partial x \partial y} + u \frac{\partial^2 v}{\partial x^2}
+\end{equation}
+From the properties of the solution a second order linear differential equation explored in the appendix and an analogy drawn from the equation \ref{eqn26}, we can expect a stable flow to obey $\frac{\nabla^2 \psi}{\psi} < 0 \implies \frac{1}{\psi}(\vec{\nabla} \times \vec{u})\cdot\hat{z} > 0$ (which essentially means this quantitative indicator of flow identifies a local vorticity in the flow described in the Eulerian description; these non-zero vorticities describe a local emergence of eddies, wakes etc.) and $\nu \bigg(\frac{\partial^3 u}{\partial x^2 \partial y}+\frac{\partial^3 u}{\partial y^3}-\frac{\partial^3 v}{\partial x^3}-\frac{\partial^3 v}{\partial x \partial y^2}\bigg) - v \frac{\partial^2 u}{\partial y^2} + v \frac{\partial^2 v}{\partial x \partial y} - u \frac{\partial^2 u}{\partial x \partial y} + u \frac{\partial^2 v}{\partial x^2} < 0$ (qualitatively so, because if this quantities grow bigger in time, this leads to the growth and emergence of local irregularities in the flow). \\ \\
+Let us dig down even deeper into the natural ways of emergence of vorticities and their sustenance through the time by using scaled non-dimensional variables ($\omega = \nabla \times \vec{u}$ is the vorticity),
+\begin{equation*}
+u = \tilde{u}U_c, x = \tilde{x} L_c, \psi = \tilde{\psi} U_c L_c, t = \tilde{t} \frac{L_c}{U_c}, \omega = \tilde{\omega} \frac{U_c}{L_c}
+\end{equation*}
+which leads to the following simplification,
+\begin{equation*}
+\frac{1}{\operatorname{Re}}\tilde{\nabla}^4 \tilde{\psi} - \frac{\partial}{\partial \tilde{t}} \tilde{\nabla}^2 \tilde{\psi} = \frac{\partial}{\partial \tilde{y}}\bigg(\tilde{u}\frac{\partial \tilde{u}}{\partial \tilde{x}}+\tilde{v}\frac{\partial \tilde{u}}{\partial \tilde{y}}\bigg)-\frac{\partial}{\partial \tilde{x}}\bigg(\tilde{u}\frac{\partial \tilde{v}}{\partial \tilde{x}}+\tilde{v}\frac{\partial \tilde{v}}{\partial \tilde{y}}\bigg), \operatorname{Re} = \frac{U_c L_c}{\nu}
+\end{equation*}
+Let us revisit the nature of the Laplacian operator $\nabla^2$, I would be using the Green's theorem for linear operators here,
+\begin{equation*}
+L_1 f = \nabla^2 f, \langle f|L_1|f \rangle = \int\int_{\Omega} f \nabla\cdot(\nabla f) dA = f (\vec{r}\cdot\nabla f)|_{\partial\Omega} - \int\int_{\Omega} (\nabla f)\cdot(\nabla f) dA
+\end{equation*}
+One can consider the $f (\vec{r}\cdot\nabla f)|_{\partial\Omega}$ to be a boundary term which can be made to vanish with appropriate boundary conditions,
+\begin{equation*}
+\langle f|L_1|f \rangle = - \int\int_{\Omega} (\nabla f)\cdot(\nabla f) dA = -\langle \nabla f|\nabla f \rangle
+\end{equation*}
+Here, for the functions $|f\rangle \in H, f \in \mathbb{C}^{\mathbb{\infty}}$ (functions in $\mathbb{C}^{\mathbb{\infty}}$ are assumed to be real-valued, along with infinitely differentiable), $H$ being a Hilbert space (not necessarily normalised), $\langle f|f \rangle \ge 0$ for the norm of the vector space to be defined, and that $\langle f|L_1|f \rangle = -\langle \nabla f|\nabla f \rangle \le 0$. Thus for any eigenvalue $\lambda, L_1 f = \lambda f$, $\langle f|L_1|f \rangle = \langle f|L_1 f \rangle = \langle f|\lambda f \rangle = \lambda \langle f|f \rangle$, and since $\langle f|f \rangle \ge 0$ and $\langle f|L_1|f \rangle \le 0$, $\lambda \le 0$. Thus the negative of the Laplacian operator is positive semi-definite, by definition. Similarly, for the operator $L_2 f = \frac{\partial f}{\partial t}$
+\begin{equation*}
+\langle f|L_2|f \rangle = \int_{t=0}^{\infty} f\frac{\partial f}{\partial t}dt = f^2|^{t=\infty}_{t=0} - \int_{t=0}^{\infty} f\frac{\partial f}{\partial t}dt = -\langle f|L_2|f \rangle, f(t=0) = f(t=\infty) = 0
+\end{equation*}
+\begin{equation*}
+\implies \langle f|L_2^{\dagger}|f \rangle = -\langle f|L_2|f \rangle
+\end{equation*}
+For the eigensystem $|L_2 f\rangle = \lambda_t |f\rangle$, $\langle f|L_2|f \rangle = \lambda_t \langle f|f \rangle$ and $\langle f|L_2^{\dagger}|f \rangle = \overline{\lambda_t} \langle f|f \rangle$ so $\overline{\lambda_t} = -\lambda_t$, thus for a function $f$ in the Hilbert space, the eigenvalues of the operator $L_2 = \frac{\partial}{\partial t}$ are purely imaginary and thus the function $f$ is periodic and thus bounded, by default. The only other case where the eigenfunction $f$ is bounded is that $\lambda_t$ is real and negative. \\ \\
+Returning back to the equation for the actual solution to the 2D Navier-Stokes equation in terms of the stream function,
+\begin{equation*}
+\frac{1}{\operatorname{Re}}\tilde{\nabla}^4 \tilde{\psi} - \frac{\partial}{\partial \tilde{t}} \tilde{\nabla}^2 \tilde{\psi} = \frac{\partial}{\partial \tilde{y}}\bigg(\tilde{u}\frac{\partial \tilde{u}}{\partial \tilde{x}}+\tilde{v}\frac{\partial \tilde{u}}{\partial \tilde{y}}\bigg)-\frac{\partial}{\partial \tilde{x}}\bigg(\tilde{u}\frac{\partial \tilde{v}}{\partial \tilde{x}}+\tilde{v}\frac{\partial \tilde{v}}{\partial \tilde{y}}\bigg), \operatorname{Re} = \frac{U_c L_c}{\nu}
+\end{equation*}
+The right hand side of the equation consists of a linear operator $L = \frac{L_1}{\operatorname{Re}}+L_2$ where $L_1 \tilde{\psi} = \tilde{\nabla}^4 \tilde{\psi}$ and $L_2 = -\frac{\partial}{\partial \tilde{t}}\tilde{\nabla}^2 \tilde{\psi}$. Let us consider a neighbourhood $\tilde{x}_0 - \delta \tilde{x}_0 \le \tilde{x} \le \tilde{x}_0 + \delta \tilde{x}_0, \tilde{y}_0 - \delta \tilde{y}_0 \le \tilde{y} \le \tilde{y}_0 + \delta \tilde{y}_0$ ($\frac{\delta \tilde{x}_0}{\tilde{x}_0}, \frac{\delta \tilde{y}_0}{\tilde{y}_0} << 1$) where the following holds good (only in the region aforementioned),
+\begin{equation*}
+\tilde{\nabla}^2 \tilde{\psi} = -\lambda^2(\tilde{t}, \tilde{x}, \tilde{y}) \tilde{\psi} \approx -\lambda_1(\tilde{t})^2\tilde{\psi}, \lambda : \mathbb{R} \to \mathbb{R}
+\end{equation*}
+because for $\lambda_1(\tilde{t}) = \lambda(\tilde{t}, \tilde{x}_0, \tilde{y}_0)$,
+\begin{equation*}
+\lambda(\tilde{t}, \tilde{x}, \tilde{y}) = \lambda_1(\tilde{t}) + \delta \tilde{x}_0 \frac{\partial \lambda}{\partial \tilde{x}}\bigg|_{(\tilde{x}, \tilde{y}) = (\tilde{x}_0, \tilde{y}_0)} + \delta \tilde{y}_0 \frac{\partial \lambda}{\partial \tilde{y}}\bigg|_{(\tilde{x}, \tilde{y}) = (\tilde{x}_0, \tilde{y}_0)} + O(|\delta \tilde{x}_0|^2)
+\end{equation*}
+There will be two cases of bounded solutions we consider here; one case is that of the exponentially bounded solution
+\begin{equation*}
+\frac{\partial \tilde{\psi}}{\partial \tilde{t}} = -\tilde{\omega}_1(\tilde{t}, \tilde{x}, \tilde{y}) \tilde{\psi} \approx -\tilde{\omega}_2(\tilde{t})\tilde{\psi}, \forall \tilde{t} > 0, \tilde{\omega}_2(\tilde{t}) > 0
+\end{equation*}
+and again for $\tilde{\omega}_2(\tilde{t}) = \tilde{\omega}_1(\tilde{t}, \tilde{x}_0, \tilde{y}_0)$ one can obtain a similar Taylor-series expansion around $(\tilde{x}, \tilde{y}) = (\tilde{x}_0, \tilde{y}_0)$. Thus, we obtain the linear operation on the stream function $\tilde{\psi}$,
+\begin{equation} \label{eqn27}
+\implies L \tilde{\psi} =  \frac{1}{\operatorname{Re}}\tilde{\nabla}^4 \tilde{\psi} - \frac{\partial}{\partial \tilde{t}} \tilde{\nabla}^2 \tilde{\psi} = \bigg(\frac{\lambda_1^4}{\operatorname{Re}}-\tilde{\omega}_2\lambda_1^2\bigg)\tilde{\psi}
+\end{equation}
+Another case is that of periodic bounded solution,
+\begin{equation*}
+\frac{\partial \tilde{\psi}}{\partial \tilde{t}} = i\mu_1(\tilde{t},\tilde{x}, \tilde{y}, \tilde{z}) \tilde{\psi} \approx i\mu(\tilde{t})\tilde{\psi}, \mu :\mathbb{R}\to\mathbb{R}, \mu_1(\tilde{t},\tilde{x}_0,\tilde{y}_0) = \mu(\tilde{t})
+\end{equation*}
+where we obtain the linear operation on the stream function $\tilde{\psi}$,
+\begin{equation*}
+\implies L \tilde{\psi} =  \frac{1}{\operatorname{Re}}\tilde{\nabla}^4 \tilde{\psi} - \frac{\partial}{\partial \tilde{t}} \tilde{\nabla}^2 \tilde{\psi} = \bigg(\frac{\lambda_1^4}{\operatorname{Re}}+i\mu\lambda_1^2\bigg)\tilde{\psi}
+\end{equation*}
+For the velocity field to be in $C^{\infty}$ and bounded, the stream function $\psi$ should also be in $C^{\infty}$ and bounded. As a first, the ratio $\frac{\tilde{\nabla}^2 \tilde{\psi}}{\tilde{\psi}} > 0 \implies \frac{(\tilde{\nabla}\times\tilde{u})\cdot\hat{z}}{\tilde{\psi}} < 0$ is case where there one should physically seek for exponentially decaying solution in space for boundedness; or this can lead to local blowup of the solution in the region of consideration $\tilde{x}_0 - \delta \tilde{x}_0 \le \tilde{x} \le \tilde{x}_0 + \delta \tilde{x}_0, \tilde{y}_0 - \delta \tilde{y}_0 \le \tilde{y} \le \tilde{y}_0 + \delta \tilde{y}_0$. Same is the case with the ratio $\frac{1}{\tilde{\psi}}\frac{\partial^2 \tilde{\psi}}{\partial \tilde{t}^2} > 0$ that we stick to the exponentially decaying solution in time for boundedness, for instance the basic case of Hagen-Poiseuille flow in a pipe with constant pressure gradient. The favourable case is that of the equation \ref{eqn27} where $\tilde{\omega}_2(\tilde{t}) > 0, \forall \tilde{t} > 0$, which boils down to the simplification, an equation which holds good in the region $\tilde{x}_0 - \delta \tilde{x}_0 \le \tilde{x} \le \tilde{x}_0 + \delta \tilde{x}_0, \tilde{y}_0 - \delta \tilde{y}_0 \le \tilde{y} \le \tilde{y}_0 + \delta \tilde{y}_0$ ($\frac{\delta \tilde{x}_0}{\tilde{x}_0}, \frac{\delta \tilde{y}_0}{\tilde{y}_0} << 1$)
+\begin{equation*}
+\frac{\partial}{\partial \tilde{y}}\bigg(\tilde{u}\frac{\partial \tilde{u}}{\partial \tilde{x}}+\tilde{v}\frac{\partial \tilde{u}}{\partial \tilde{y}}\bigg)-\frac{\partial}{\partial \tilde{x}}\bigg(\tilde{u}\frac{\partial \tilde{v}}{\partial \tilde{x}}+\tilde{v}\frac{\partial \tilde{v}}{\partial \tilde{y}}\bigg) = \bigg(\frac{\lambda_1(\tilde{t})^4}{\operatorname{Re}}-\tilde{\omega}_2(\tilde{t})\lambda_1(\tilde{t})^2\bigg)\tilde{\psi}, \tilde{u}(\tilde{r},\tilde{t} = 0) = \tilde{u}_0(\tilde{r})
+\end{equation*}
+\begin{equation} \label{eqn28}
+, \psi_0(\tilde{r}) = \nabla \times \tilde{u}_0(\tilde{r}) \implies \frac{\partial}{\partial \tilde{y}}\bigg(\tilde{u_0}\frac{\partial \tilde{u_0}}{\partial \tilde{x}}+\tilde{v_0}\frac{\partial \tilde{u_0}}{\partial \tilde{y}}\bigg)-\frac{\partial}{\partial \tilde{x}}\bigg(\tilde{u_0}\frac{\partial \tilde{v_0}}{\partial \tilde{x}}+\tilde{v_0}\frac{\partial \tilde{v_0}}{\partial \tilde{y}}\bigg) = \frac{\lambda_1(0)^4}{\operatorname{Re}}\tilde{\psi_0}
+\end{equation}
+It has been asserted long ago that there exists a unique solution to two-dimensional Navier-Stokes equations with given initial condition $\tilde{u}(\tilde{r},\tilde{t} = 0) = \tilde{u}_0(\tilde{r})$ \cite{exactSolution}, which also uniquely satisfies equation \ref{eqn28}. The reminiscent assumption in the equation \ref{eqn28} is that $\tilde{\omega}_2(\tilde{t} = 0) = 0$; in general, from the construction of functions above, $\tilde{\omega}_2(\tilde{t}) \ge 0 \forall \tilde{t}$, so at first one can choose $\tilde{t} = \tilde{t}_0$, such that $\tilde{\omega}_2(\tilde{t}_0) = 0$. Then given the time-translation invariance of the Navier-Stokes equations (or Newton's laws in general), without changing the overall physics I can shift the time $\tilde{t} \to \tilde{t}-\tilde{t}_0$ such that $\tilde{\omega}_2(\tilde{t}=0) = 0$. This equation is also reminiscent of the quantity that I want to define as the \textit{local advective rate of vorticity transport} (LARVT) $\xi$.
+\begin{equation} \label{eqn29}
+\xi(\tilde{t},\tilde{x}_0,\tilde{y}_0) = \frac{(\tilde{\nabla}\times(\tilde{u}\cdot\tilde{\nabla})\tilde{u})\cdot\hat{z}}{(\tilde{\nabla}\times\tilde{u})\cdot\hat{z}}\bigg|_{\tilde{t},\tilde{x}_0,\tilde{y}_0} = \frac{((\tilde{u}\cdot\tilde{\nabla})\tilde{\omega})\cdot\hat{z}}{\tilde{\omega}\cdot\hat{z}}\bigg|_{\tilde{t},\tilde{x}_0,\tilde{y}_0} = \bigg(\frac{\lambda_1^4}{\operatorname{Re}}-\tilde{\omega}_2\lambda_1^2\bigg)\bigg|_{\tilde{t},\tilde{x}_0,\tilde{y}_0}
+\end{equation}
+Notice that equations \ref{eqn28} and \ref{eqn29} suggest that the initial condition at $\tilde{t} = 0 \implies \tilde{\omega} = 0$ translate to the fact that local advective rate of vorticity transport begins with a positive value, and assuming that $\tilde{\omega}_2 > 0, \forall \tilde{t} > 0, \tilde{r}_0 \in \mathbb{R}^2$, there should definitely be a transition from a positive value to a negative value, where the critical value of time scale $\tilde{t} = \tilde{t}_{crit}, \tilde{\omega}_2(\tilde{t}_{crit}) = \operatorname{Re}^{-1}\lambda_1(\tilde{t}_{crit})^2$. One can show from simple to show from simple Taylor approximations in the region $\tilde{x}_0 - \delta \tilde{x}_0 \le \tilde{x} \le \tilde{x}_0 + \delta \tilde{x}_0, \tilde{y}_0 - \delta \tilde{y}_0 \le \tilde{y} \le \tilde{y}_0 + \delta \tilde{y}_0$ ($\frac{\delta \tilde{x}_0}{\tilde{x}_0}, \frac{\delta \tilde{y}_0}{\tilde{y}_0} << 1$), 
+\begin{equation*}
+\frac{\partial \tilde{u}(\tilde{t}, \tilde{x}, \tilde{y})}{\partial \tilde{t}} = \frac{\partial}{\partial \tilde{t}} (\vec{\tilde{\nabla}} \times \tilde{\psi} \hat{z}) = -\vec{\tilde{\nabla}}\tilde{\omega}_2(\tilde{t}, \tilde{x}_0, \tilde{y}_0) \times (\tilde{\psi} \hat{z})\bigg|_{(\tilde{x}, \tilde{y})=(\tilde{x}_0, \tilde{y}_0)} - \tilde{\omega}_2(\tilde{t}, \tilde{x}_0, \tilde{y}_0) (\vec{\tilde{\nabla}} \times \tilde{\psi} \hat{z})\bigg|_{(\tilde{x}, \tilde{y})=(\tilde{x}_0, \tilde{y}_0)} + O\bigg(\frac{\delta \tilde{x}_0}{\tilde{x}_0}\bigg)
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial \tilde{u}}{\partial \tilde{t}} = -\vec{\tilde{\nabla}}\tilde{\omega}_2(\tilde{t}, \tilde{x}_0, \tilde{y}_0) \times (\tilde{\psi} \hat{z})\bigg|_{(\tilde{x}, \tilde{y})=(\tilde{x}_0, \tilde{y}_0)} - \tilde{\omega}_2(\tilde{t}, \tilde{x}_0, \tilde{y}_0) \vec{\tilde{u}}|_{(\tilde{x}, \tilde{y})=(\tilde{x}_0, \tilde{y}_0)} + O\bigg(\frac{\delta \tilde{x}_0}{\tilde{x}_0}\bigg)
+\end{equation*}
+The time scale $\tilde{t}_{crit}$ is a measure of the time the system should be able to retain its current state (original state); for high Reynolds number, the system is unable to able to stick to its current state in terms of velocity and pressure fields; and for low Reynolds number, the system holds its current state for a long time depending on the value of $\lambda_1^2$ (the dominant behaviour of the velocity field is that of an exponential decay). The emergence of turbulence is determined by the dimensionless eigenvalue quantity $\lambda_1$, i.e. the degree of resistance provided by the viscous drag that is able to compete with the local inertia in the neighbourhood. \\ \\
+We will prove the existence of the time scale $\tilde{t}_{crit}$, i.e. the fact there exists a zero of the function $\xi(\tilde{t}, \tilde{x}_0,\tilde{y}_0) = \bigg(\frac{\lambda_1^4}{\operatorname{Re}}-\tilde{\omega}\lambda_1^2\bigg)\bigg|_{\tilde{t},\tilde{x}_0,\tilde{y}_0}$ given that $\tilde{\omega} > 0, \forall \tilde{t} > 0, (\tilde{x}_0,\tilde{y}_0) \in \mathbb{R}^2$. Since $\xi(\tilde{t}=0, \tilde{x}_0,\tilde{y}_0) > 0$, let us assume for this proof that $\xi(\tilde{t}, \tilde{x}_0,\tilde{y}_0) > 0, \forall \tilde{t}\ge0$. One can show that equations \ref{eqn28} and \ref{eqn29} can be expressed in terms of the non-dimensionalized stream function as,
+\begin{equation*}
+\frac{\partial \tilde{\psi}}{\partial \tilde{y}} \frac{\partial}{\partial \tilde{x}}\operatorname{log}(\tilde{\nabla}^2 \tilde{\psi}) - \frac{\partial \tilde{\psi}}{\partial \tilde{x}} \frac{\partial}{\partial \tilde{y}}\operatorname{log}(\tilde{\nabla}^2 \tilde{\psi}) = \xi, \tilde{x}_0-\delta\tilde{x}_0 < \tilde{x} < \tilde{x}_0 + \delta \tilde{x}_0, \tilde{y}_0-\delta\tilde{y}_0 < \tilde{y} < \tilde{y}_0 + \delta \tilde{y}_0
+\end{equation*}
+Let us express the solution in terms of $\operatorname{log}(\tilde{\nabla}^2 \tilde{\psi})$ to see what happens. I would be using method of characteristics to express the solution in terms of a running parameter $s$, i.e. $\tilde{x} = \tilde{x}(s), \tilde{y} = \tilde{y}(s), \tilde{\psi} = \tilde{\psi}(s), \tilde{z} = \tilde{z}(s) = \operatorname{log}(\tilde{\nabla}^2 \tilde{\psi})$. For an equation like $a(x, y, z)\frac{dz}{dx}+b(x,y,z)\frac{dz}{dy}=c(x,y,z)$, the normal to the surface solution $z = z(x, y)$ is parallel to the vector $\langle\frac{\partial z}{\partial x},\frac{\partial z}{\partial y},-1\rangle$ and according to the set PDE, the tangent to the surface is parallel to the vector $\langle a(x, y, z), b(x, y, z), c(x, y, z)\rangle$. Thereby using the Lagrange-Charpit equations, $\frac{dx}{ds} = a(x, y, z), \frac{d y}{d s} = b(x, y, z), \frac{d z}{d s} = c(x, y, z)$. Using the same Lagrange-Charpit equations, one can obtain the complete solution in terms of $\tilde{x} = \tilde{x}(s), \tilde{y} = \tilde{y}(s), \tilde{\psi} = \tilde{\psi}(s), \tilde{z} = \operatorname{log}(\tilde{\nabla}^2 \tilde{\psi})$,
+\begin{equation*}
+\frac{d \tilde{x}}{d s} = \frac{\partial \tilde{\psi}}{\partial \tilde{y}} = \tilde{u}(\tilde{x}(s),\tilde{y}(s)), \frac{d \tilde{y}}{d s} = -\frac{\partial \tilde{\psi}}{\partial \tilde{x}} = \tilde{v}(\tilde{x}(s),\tilde{y}(s))
+\end{equation*}
+\begin{equation}
+\frac{d}{d s}\operatorname{log}(\tilde{\nabla}^2 \tilde{\psi}) = \xi(\tilde{x}(s),\tilde{y}(s)) \implies \operatorname{log}(\tilde{\nabla}^2 \tilde{\psi})|_{(\tilde{x},\tilde{y})=(\tilde{x}(s),\tilde{y}(s))} = \int_{s_1=-\infty}^{s_1=s} \xi(\tilde{x}(s_1),\tilde{y}(s_1))  ds_1
+\end{equation}
+Here I am assuming that without loss of generality, $-\infty<s<\infty \implies \tilde{x}_0-\delta\tilde{x}_0<\tilde{x}(s)<\tilde{x}_0+\delta\tilde{x}_0, \tilde{y}_0-\delta\tilde{y}_0<\tilde{y}(s)<\tilde{y}_0+\delta\tilde{y}_0$, a regime where $\tilde{\nabla}^2 \tilde{\psi} = -\lambda_1^2 \tilde{\psi}, \lambda_1 \in \mathbb{R}$. So in the above equation, the left hand side of the equation comes out to be complex at the instances where $\tilde{\psi} > 0$ and the right hand side of the equation is strictly positive because of the assumption that $\xi(\tilde{t}, \tilde{x}_0,\tilde{y}_0) > 0, \forall \tilde{t}\ge0$. Thus we arrive at a contradiction due to a wrong assumption, thereby proving that there exists at least one such $(\tilde{t}_1, \tilde{x}_1,\tilde{y}_1), \tilde{x}_0-\delta\tilde{x}_0<\tilde{x}_1<\tilde{x}_0+\delta\tilde{x}_0, \tilde{y}_0-\delta\tilde{y}_0<\tilde{y}_1<\tilde{y}_0+\delta\tilde{y}_0, \tilde{t}_1 > 0$ such that $\xi(\tilde{t_1}, \tilde{x}_1,\tilde{y}_1) \le 0$. Conversely, if I consider an assumption $\xi(\tilde{t_1}, \tilde{x}_1,\tilde{y}_1) < 0$ for all $\tilde{t_1}, \tilde{x}_1,\tilde{y}_1$, one can arrive at that there exists $\tilde{t_1}, \tilde{x}_1,\tilde{y}_1$ such that $\xi(\tilde{t_1}, \tilde{x}_1,\tilde{y}_1) \ge 0$. Supportive simulation results have been generated using the FreeFEM++ software for the Navier-Stokes flow past a cylinder, across Falkner-Skan wedge obstacles, and across NACA 0015 airfoil profile (as shown in figures \ref{Fig1}, \ref{Fig2}, \ref{Fig3}, \ref{Fig4} and \ref{Fig5}), which suggest that if LARVT $\xi$ is positive, there's a balance more between the advective acceleration and the viscous drag and if the rate is negative, there's a balance more between the advective acceleration and the viscous drag and if the rate is negative, there's a balance more between the advective acceleration and the viscous drag. The figures \ref{Fig1}, \ref{Fig2}, \ref{Fig3}, \ref{Fig4} and \ref{Fig5} not only clarify the existence of the time scale $\tilde{T}_{crit}$, but also suggest that the zeroes of the LARVT (as a function of time) dictate the level of the irregularity of the solution. \\ \\
+\begin{figure}
+\includegraphics[scale=0.24]{VorticityRe1500T3o27.png}
+\includegraphics[scale=0.24]{VorticityRe1500T19o6.png}
+\includegraphics[scale=0.24]{VorticityRe1500T35o93.png}
+\includegraphics[scale=0.24]{VorticityRe1500T52o27.png}
+\includegraphics[scale=0.24]{VorticityRe1500T68o6.png}
+\includegraphics[scale=0.24]{VorticityRe1500T84o93.png}
+\includegraphics[scale=0.24]{VorticityRe1500T101o26.png}
+\includegraphics[scale=0.24]{VorticityRe1500T117o6.png}
+\includegraphics[scale=0.24]{VorticityRe1500T133o933.png}
+\includegraphics[scale=0.24]{VorticityRe1500T150o27.png}
+\includegraphics[scale=0.24]{VorticityRe1500T166o67.png}
+\includegraphics[scale=0.24]{VorticityRe1500T182o93.png}
+\includegraphics[scale=0.37]{LARVTCylinderRe1500.png}
+\caption{\label{Fig1} All the plots except the last one, are the plots of the absolute value of vorticity of the flow past a cylinder as it varies in space (for Reynolds number $\operatorname{Re} = 1.5 \times 10^3$) for the time instances $t = 3.27 \operatorname{s}, 19.6 \operatorname{s}, 35.93 \operatorname{s}, 52.27 \operatorname{s}, 68.6 \operatorname{s}, 84.93 \operatorname{s}, 101.26 \operatorname{s}, 117.6 \operatorname{s}, 133.933 \operatorname{s}, 150.27 \operatorname{s}, 166.67 \operatorname{s}$ and $182.93 \operatorname{s}$ (in that order). The last plot is that of the variation of LARVT at a point behind the wake of the cylinder with time. One can visually see the emergence of irregularities in the solution occur every time the LARVT function at a point encounters a zero in its occurrence.}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.24]{WedgeRe637T4o62.png}
+\includegraphics[scale=0.24]{WedgeRe637T27o69.png}
+\includegraphics[scale=0.24]{WedgeRe637T50o77.png}
+\includegraphics[scale=0.24]{WedgeRe637T73o85.png}
+\includegraphics[scale=0.24]{WedgeRe637T96o92.png}
+\includegraphics[scale=0.24]{WedgeRe637T120.png}
+\includegraphics[scale=0.54]{LARVTWedgeRe637.png}
+\caption{\label{Fig2} All the plots except the last one, are the plots of the absolute value of vorticity of the flow past an obstacle in the shape of a rhombus (of angles $60^{o}$ and $120^{o}$) as it varies in space (for Reynolds number $\operatorname{Re} = 637$) for the time instances $t = 4.62 \operatorname{s}, 27.69 \operatorname{s}, 50.77 \operatorname{s}, 73.85 \operatorname{s}, 96.92 \operatorname{s}$ and $120 \operatorname{s}$ (in that order). The last plot is that of the variation of LARVT at a point behind the wake of the wedge with time. One can visually see the emergence of irregularities in the solution occur every time the LARVT function at a point encounters a zero in its occurrence, and near the vertical corners the profile of the vorticity is similar to that of the ones explored in \cite{lingxu}.}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.17]{LARVTCylinderRe1by4.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe3by2.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe05.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe20.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe30.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe40.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe50.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe70.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe100.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe140.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe160.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe200.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe240.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe270.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe300.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe500.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe1000.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe1500.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe2000.png}
+\includegraphics[scale=0.17]{LARVTCylinderRe3000.png}
+\caption{\label{Fig3} The variation of LARVT (in s$^{-1}$) with time (in s) for flow across a cylinder in a pipe (of fixed size) for a range of Reynolds numbers $\operatorname{Re} = 0.25, 1.5, 5, 20, 30, 40, 50, 70, 100, 140, 160, 200, 240, 270, 300, 500, 1000, 1500, 2000$ and $3000$ (in that order). There are at most two zeroes for LARVT in the regime $\operatorname{Re} < 50$ (described as the laminar region), at most four zeroes in the regime $50 < \operatorname{Re} < 150$ (described as the stable region), at most 16 zeroes in the regime (in the increasing sense of numbers) $150 < \operatorname{Re} < 500$ (described as the turbulent region), and increasing number of zeroes with the increasing Strouhal number $\operatorname{St} = \frac{f L_c}{U_c}$ (described as the irregular region, with the vortex shredding happening) for $\operatorname{Re}>500$, $f$ being the frequency of vortex shredding. The regions thus described are close enough to the ones mentioned in \cite{roshko}.}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.20]{LARVTWedgeRe1by4.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe01.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe10.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe125.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe250.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe375.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe500.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe750.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe950.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe950.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe1000.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe2200.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe3000.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe5000.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe7500.png}
+\includegraphics[scale=0.20]{LARVTWedgeRe10000.png}
+\caption{\label{Fig4} The variation of LARVT (in s$^{-1}$) with time (in s) for flow across a wedge of a rhombus (with angles fixed at $60^{o}$ and $120^{o}$ and constant size) in a 2D channel for a range of Reynolds numbers $\operatorname{Re} = 0.25, 1, 10, 125, 250, 375, 500, 750, 950, 1000, 2200, 3000, 5000, 7500$ and $10^4$ (in that order). There are no zeroes for LARVT in the regime $\operatorname{Re} < 125$ (described as the laminar region), at most two zeroes in the regime $125 < \operatorname{Re} < 500$ (described as the stable region), at most four zeroes in the regime $500 < \operatorname{Re} < 1000$ (described as the turbulent region), and increasing number of zeroes with the increasing Strouhal number (described as the irregular region, with the vortex shredding happening) for $\operatorname{Re} > 1000$.}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.23]{LARVTNacaRe5000.png}
+\includegraphics[scale=0.23]{LARVTNacaRe10000.png}
+\includegraphics[scale=0.23]{LARVTNacaRe50000.png}
+\includegraphics[scale=0.23]{LARVTNacaRe70000.png}
+\includegraphics[scale=0.23]{LARVTNacaRe100000.png}
+\includegraphics[scale=0.23]{LARVTNacaRe560000.png}
+\includegraphics[scale=0.23]{LARVTNacaRe16106.png}
+\includegraphics[scale=0.23]{LARVTNacaRe35106.png}
+\includegraphics[scale=0.23]{LARVTNacaRe51106.png}
+\caption{\label{Fig5} The variation of LARVT (in s$^{-1}$) with time (in s) for flow across a NACA 0015 airfoil in a 2D channel for a range of Reynolds numbers $\operatorname{Re} = 5\times10^3, 10^4, 5\times10^4, 7\times 10^4, 10^5, 5.6\times10^5, 1.6\times10^6, 3.5\times10^6$ and $5.1\times10^6$ (in that order). There are no zeroes for LARVT in the regime $\operatorname{Re} < 125$ (described as the laminar region), at most two zeroes in the regime $125 < \operatorname{Re} < 500$ (described as the stable region), at most four zeroes in the regime $500 < \operatorname{Re} < 1000$ (described as the turbulent region), and increasing number of zeroes with the increasing Strouhal number (described as the irregular region, with the vortex shredding happening) for $\operatorname{Re} > 1000$ \cite{naca0015}.}
+\end{figure}
+Let us see the possibility of the same with the incompressible Navier-Stokes equations in 3-dimensions for $\vec{u}(x,y,z,t) = \langle u(x,y,z,y), v(x,y,z,t), w(x,y,z,t) \rangle, p = p(x,y,z,t)$, (where $p = \frac{p^{\alpha}}{\rho}$, $p^{\alpha} = p^{\alpha}(x,y,z,t)$ being the actual pressure field and $\rho$ is the density of field; $\nu$ is the kinematic viscosity)
+\begin{equation} \label{eqn1}
+\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} + \frac{\partial w}{\partial z} = 0
+\end{equation}
+\begin{equation} \label{eqn2}
+\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y} + w \frac{\partial u}{\partial z} + \frac{\partial p}{\partial x} - \nu \bigg(\frac{\partial^2 u}{\partial x^2} +\frac{\partial^2 u}{\partial y^2}+\frac{\partial^2 u}{\partial z^2}\bigg) = 0
+\end{equation}
+\begin{equation} \label{eqn3}
+\frac{\partial v}{\partial t} + u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y} + w \frac{\partial v}{\partial z} + \frac{\partial p}{\partial y} - \nu \bigg(\frac{\partial^2 v}{\partial x^2} +\frac{\partial^2 v}{\partial y^2}+\frac{\partial^2 v}{\partial z^2}\bigg) = 0
+\end{equation}
+\begin{equation} \label{eqn4}
+\frac{\partial w}{\partial t} + u \frac{\partial w}{\partial x} + v \frac{\partial w}{\partial y} + w \frac{\partial w}{\partial z} + \frac{\partial p}{\partial z} - \nu \bigg(\frac{\partial^2 w}{\partial x^2} +\frac{\partial^2 w}{\partial y^2}+\frac{\partial^2 w}{\partial z^2}\bigg) = 0
+\end{equation}
+We introduce the notation $\vec{u}=\langle u^i \rangle, \vec{x} = \langle x_i \rangle, u^{i}_{x_1,x_2, \cdots, x_n} = \frac{\partial^n u^i}{\partial x_1 \partial x_2 \cdots \partial x_n}$. This representation yields the equations to be,
+\begin{equation*}
+u_x + v_y + w_z = 0
+\end{equation*}
+\begin{equation*}
+u_t + u u_x + v u_y + w u_z + p_x - \nu (u_{xx} + u_{yy} + u_{zz}) = 0
+\end{equation*}
+\begin{equation*}
+v_t + u v_x + v v_y + w v_z + p_y - \nu (v_{xx} + v_{yy} + v_{zz}) = 0
+\end{equation*}
+\begin{equation*}
+w_t + u w_x + v w_y + w w_z + p_z - \nu (w_{xx} + w_{yy} + w_{zz}) = 0
+\end{equation*}
+To solve this system we would be using the techniques to find the differential Gr\"obner basis elucidated in the algorithms explored in \cite{groebnerbasis}. Using the equation \ref{eqn1}, i.e. $u_x = -(v_y + w_z)$ in equation \ref{eqn2}, $v_y = -(u_x + w_z)$ in equation \ref{eqn3} and $w_z = -(u_x + v_y)$ in equation \ref{eqn4}, we get,
+\begin{equation} \label{eqn5}
+u_t + u u_x + v u_y + w u_z + p_x + \nu (v_{xy} + w_{xz} - u_{yy} - u_{zz}) = f_5 = 0
+\end{equation}
+\begin{equation} \label{eqn6}
+v_t + u v_x + v v_y + w v_z + p_y + \nu (u_{xy} + w_{yz} - v_{xx} - v_{zz}) = f_6 = 0
+\end{equation}
+\begin{equation} \label{eqn7}
+w_t + u w_x + v w_y + w w_z + p_z + \nu (u_{xz} + v_{yz} - w_{xx} - w_{yy}) = f_7 = 0
+\end{equation}
+Then to eliminate $p$ from the equations, we take the curl of the equations \ref{eqn5}, \ref{eqn6} and \ref{eqn7},
+\begin{equation*}
+f_8 = \frac{\partial f_5}{\partial y} - \frac{\partial f_6}{\partial x} = (u_{yt}-v_{xt})+(u_x u_y + u u_{xy} - u_x v_x - u v_{xx})+(u_y v_y + u v_{yy} - v_x v_y - v v_{xy}) 
+\end{equation*}
+\begin{equation}
++(u_z w_y + u w_{yz} - w v_{xz} - w_x v_z) + \nu (v_{xxx}+v_{xyy}+v_{xzz}-u_{xxy}-u_{yyy}-u_{yzz})= 0
+\end{equation}
+\begin{equation*}
+f_9 = \frac{\partial f_5}{\partial z} - \frac{\partial f_7}{\partial x} = (u_{zt}-w_{xt})+(u_x u_z + u u_{xz} - u_x w_x - u w_{xx})+(u_y v_z + u v_{yz} - v_x w_y - v w_{xy}) 
+\end{equation*}
+\begin{equation}
++(u_z w_z + u w_{zz} - w w_{xz} - w_x w_z) + \nu (w_{xxx}+w_{xyy}+w_{xzz}-u_{xxz}-u_{yyz}-u_{zzz})= 0
+\end{equation}
+\begin{equation*}
+\frac{\partial f_6}{\partial z} - \frac{\partial f_7}{\partial y} = (v_{zt}-w_{yt})+(u_z v_x + u v_{xz} - u_y w_x - u w_{xy})+(v_y v_z + v v_{yz} - v_x w_y - v w_{xy}) 
+\end{equation*}
+\begin{equation} \label{eqn8}
++(w_z v_z + w v_{zz} - w w_{yz} - w_y w_z) + \nu (w_{xxy}+w_{yyy}+w_{yzz}-v_{xxz}-v_{yyz}-v_{zzz})= 0 
+\end{equation}
+Considering and evaluating $\frac{\partial f_8}{\partial z} - \frac{\partial f_9}{\partial y}$ we get,
+\begin{equation*}
+\frac{\partial f_8}{\partial z} - \frac{\partial f_9}{\partial y} = 0 \implies u(w_{xxy}-v_{xxz}) + u_y w_{xx} - u_z v_{xx} + (w_{xzt}-v_{xzt}) - w_x(v_{yy}+v_{zz})
+\end{equation*}
+\begin{equation*}
++ v_x(w_{yy}+w_{zz}) + v(w_{xxy}-v_{xzz}) + w(w_{xyz}-v_{xxz}) + (v_{xy}+w_{xz})(w_y-v_z)
+\end{equation*}
+\begin{equation} \label{eqn9}
++ \nu (w_{xxyy}+w_{xyyy}+w_{xyzz}-v_{xxxz}-v_{xyyz}-v_{xzzz}) = 0
+\end{equation}
+Now we can now use the non-dimensionalisation that we used before,
+\begin{equation*}
+\tilde{\vec{r}} = \frac{\vec{r}}{L_c}, \tilde{\vec{u}} = \frac{\vec{u}}{U_c}, \tilde{t} = \frac{U_c t}{L_c}, \operatorname{Re} = \frac{U_c L_c}{\nu}
+\end{equation*}
+which leads to the following non-dimensionalisation of the equations \ref{eqn1}, \ref{eqn8} and \ref{eqn9},
+\begin{equation*}
+\implies \tilde{u}_{\tilde{x}} + \tilde{v}_{\tilde{y}} + \tilde{w}_{\tilde{z}} = 0
+\end{equation*}
+\begin{equation*}
+\implies (\tilde{v}_{\tilde{z}\tilde{t}}-\tilde{w}_{\tilde{y}\tilde{t}})+(\tilde{u}_{\tilde{z}} \tilde{v}_{\tilde{x}} + \tilde{u} \tilde{v}_{\tilde{x}\tilde{z}} - \tilde{u}_{\tilde{y}} \tilde{w}_{\tilde{x}} - \tilde{u} \tilde{w}_{\tilde{x}\tilde{y}})+(\tilde{v}_{\tilde{y}} \tilde{v}_{\tilde{z}} + \tilde{v} \tilde{v}_{\tilde{y}\tilde{z}} - \tilde{v}_{\tilde{x}} \tilde{w}_{\tilde{y}} - \tilde{v} \tilde{w}_{\tilde{x}\tilde{y}})
+\end{equation*}
+\begin{equation*}
++(\tilde{w}_{\tilde{z}} \tilde{v}_{\tilde{z}} + \tilde{w} \tilde{v}_{\tilde{z}\tilde{z}} - \tilde{w} \tilde{w}_{\tilde{y}\tilde{z}} - \tilde{w}_{\tilde{y}} \tilde{w}_{\tilde{z}}) + \frac{1}{\operatorname{Re}} (\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}+\tilde{w}_{\tilde{y}\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{y}\tilde{z}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}}-\tilde{v}_{\tilde{y}\tilde{y}\tilde{z}}-\tilde{v}_{\tilde{z}\tilde{z}\tilde{z}})= 0 
+\end{equation*}
+\begin{equation*}
+\implies \tilde{u}(\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}}) + \tilde{u}_{\tilde{y}} \tilde{w}_{\tilde{x}\tilde{x}} - \tilde{u}_{\tilde{z}} \tilde{v}_{\tilde{x}\tilde{x}} + (\tilde{w}_{\tilde{x}\tilde{z}\tilde{t}}-\tilde{v}_{\tilde{x}\tilde{z}\tilde{t}}) - \tilde{w}_{\tilde{x}}(\tilde{v}_{\tilde{y}\tilde{y}}+\tilde{v}_{\tilde{z}\tilde{z}})
+\end{equation*}
+\begin{equation*}
++ \tilde{v}_{\tilde{x}}(\tilde{w}_{\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{z}\tilde{z}}) + \tilde{v}(\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}-\tilde{v}_{\tilde{x}\tilde{z}\tilde{z}}) + \tilde{w}(\tilde{w}_{\tilde{x}\tilde{y}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}}) + (\tilde{v}_{\tilde{x}\tilde{y}}+\tilde{w}_{\tilde{x}\tilde{z}})(\tilde{w}_{\tilde{y}}-\tilde{v}_{\tilde{z}})
+\end{equation*}
+\begin{equation*}
++ \frac{1}{\operatorname{Re}} (\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{x}\tilde{y}\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{x}\tilde{y}\tilde{z}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{x}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{y}\tilde{y}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{z}\tilde{z}\tilde{z}}) = 0
+\end{equation*}
+which helps us eliminate the velocity component $\tilde{u}$,
+\begin{equation} \label{eqn30}
+\tilde{u}_{\tilde{x}} = -(\tilde{v}_{\tilde{y}} + \tilde{w}_{\tilde{z}})
+\end{equation}
+\begin{equation} \label{eqn31}
+\tilde{u}_{\tilde{y}} = F_1 + G_1 \tilde{u}
+\end{equation}
+\begin{equation} \label{eqn32}
+\tilde{u}_{\tilde{z}} = F_2 + G_2 \tilde{u}
+\end{equation}
+where
+\begin{equation} \label{eqn35}
+F_1 = \frac{B_1 \tilde{v}_{\tilde{x}\tilde{x}} + B_2 \tilde{v}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}, F_2 = \frac{B_1 \tilde{w}_{\tilde{x}\tilde{x}} + B_2 \tilde{w}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}
+\end{equation}
+\begin{equation} \label{eqn33}
+G_1 = \frac{(\tilde{v}_{\tilde{x}\tilde{z}}-\tilde{w}_{\tilde{x}\tilde{y}})\tilde{v}_{\tilde{x}\tilde{x}}+(\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}})\tilde{v}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}
+\end{equation}
+\begin{equation} \label{eqn34}
+G_2 = \frac{(\tilde{v}_{\tilde{x}\tilde{z}}-\tilde{w}_{\tilde{x}\tilde{y}})\tilde{w}_{\tilde{x}\tilde{x}}+(\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}})\tilde{w}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}
+\end{equation}
+\begin{equation*}
+B_1 =  (\tilde{v}_{\tilde{z}\tilde{t}}-\tilde{w}_{\tilde{y}\tilde{t}})+(\tilde{v}_{\tilde{y}} \tilde{v}_{\tilde{z}} + \tilde{v} \tilde{v}_{\tilde{y}\tilde{z}} - \tilde{v}_{\tilde{x}} \tilde{w}_{\tilde{y}} - \tilde{v} \tilde{w}_{\tilde{x}\tilde{y}}) + (\tilde{w}_{\tilde{z}} \tilde{v}_{\tilde{z}} + \tilde{w} \tilde{v}_{\tilde{z}\tilde{z}} - \tilde{w} \tilde{w}_{\tilde{y}\tilde{z}} - \tilde{w}_{\tilde{y}} \tilde{w}_{\tilde{z}})
+\end{equation*}
+\begin{equation}
+ + \frac{1}{\operatorname{Re}} (\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}+\tilde{w}_{\tilde{y}\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{y}\tilde{z}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}}-\tilde{v}_{\tilde{y}\tilde{y}\tilde{z}}-\tilde{v}_{\tilde{z}\tilde{z}\tilde{z}})
+\end{equation}
+\begin{equation*}
+B_2 =  (\tilde{w}_{\tilde{x}\tilde{z}\tilde{t}}-\tilde{v}_{\tilde{x}\tilde{z}\tilde{t}}) - \tilde{w}_{\tilde{x}}(\tilde{v}_{\tilde{y}\tilde{y}}+\tilde{v}_{\tilde{z}\tilde{z}}) + \tilde{v}_{\tilde{x}}(\tilde{w}_{\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{z}\tilde{z}}) + \tilde{v}(\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}}-\tilde{v}_{\tilde{x}\tilde{z}\tilde{z}}) + \tilde{w}(\tilde{w}_{\tilde{x}\tilde{y}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{z}}) 
+\end{equation*}
+\begin{equation}
++ (\tilde{v}_{\tilde{x}\tilde{y}}+\tilde{w}_{\tilde{x}\tilde{z}})(\tilde{w}_{\tilde{y}}-\tilde{v}_{\tilde{z}}) + \frac{1}{\operatorname{Re}} (\tilde{w}_{\tilde{x}\tilde{x}\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{x}\tilde{y}\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{x}\tilde{y}\tilde{z}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{x}\tilde{x}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{y}\tilde{y}\tilde{z}}-\tilde{v}_{\tilde{x}\tilde{z}\tilde{z}\tilde{z}})
+\end{equation}
+From equations \ref{eqn30}, \ref{eqn31} and \ref{eqn32}, one can prove (with some basic differential algebra) that,
+\begin{equation*}
+\implies \tilde{u} = \frac{\partial_{\tilde{y}}F_2-\partial_{\tilde{z}}F_1+G_2F_1-G_1F_2}{\partial_{\tilde{z}}G_1-\partial_{\tilde{y}}G_2} = \frac{G_1(\tilde{v}_{\tilde{y}}+\tilde{w}_{\tilde{z}})-(\tilde{v}_{\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{y}\tilde{z}})-\partial_{\tilde{x}}F_1}{\partial_{\tilde{x}}G_1}
+\end{equation*}
+\begin{equation} \label{eqn12}
+\implies \tilde{u} = \frac{G_2(\tilde{v}_{\tilde{y}}+\tilde{w}_{\tilde{z}})-(\tilde{v}_{\tilde{y}\tilde{z}}+\tilde{w}_{\tilde{z}\tilde{z}})-\partial_{\tilde{x}}F_2}{\partial_{\tilde{x}}G_2}
+\end{equation}
+From the equations \ref{eqn33} and \ref{eqn34}, one can prove that such functions as $G_1$ and $G_2$,
+\begin{equation}
+G_1 \frac{\partial f}{\partial \tilde{x}} = \frac{\partial g}{\partial \tilde{x}}, \frac{G_2}{f^2} \frac{\partial f}{\partial \tilde{x}} = \frac{\partial (g/f)}{\partial \tilde{x}}
+\end{equation}
+where,
+\begin{equation*}
+f = \frac{\tilde{w}_{\tilde{x}}}{\tilde{v}_{\tilde{x}}}, g = \frac{\tilde{v}_{\tilde{x}\tilde{z}}-\tilde{w}_{\tilde{x}\tilde{y}}}{\tilde{v}_{\tilde{x}}}
+\end{equation*}
+One can solve and show that,
+\begin{equation*}
+f = \frac{(\partial G_2/\partial \tilde{x})}{(\partial G_1/\partial \tilde{x})}, g = \frac{G_1^2 \frac{\partial}{\partial \tilde{x}}\bigg(\frac{G_2}{G_1}\bigg)}{\bigg(\frac{\partial G_1}{\partial \tilde{x}}\bigg)}
+\end{equation*}
+and also that,
+\begin{equation} \label{eqn13}
+\tilde{v} = \int_{\tilde{y},\tilde{z}} d\tilde{x} \bigg[A(\tilde{y},\tilde{z},\tilde{t}) exp\bigg(\int_{\tilde{y} = \tilde{y}_0} d\tilde{z} \bigg(\frac{\partial f}{\partial \tilde{y}}+g\bigg)\bigg) + B(\tilde{y},\tilde{z},\tilde{t}) exp\bigg(\int_{\tilde{z} = \tilde{z}_0} d\tilde{y} \quad \frac{-1}{f}\bigg(\frac{\partial f}{\partial \tilde{y}}+g\bigg)\bigg)\bigg]
+\end{equation}
+\begin{equation} \label{eqn14}
+\tilde{w} = \int_{\tilde{y},\tilde{z}} d\tilde{x}\cdot f\bigg[A(\tilde{y},\tilde{z},\tilde{t}) exp\bigg(\int_{\tilde{y} = \tilde{y}_0} d\tilde{z} \bigg(\frac{\partial f}{\partial \tilde{y}}+g\bigg)\bigg) + B(\tilde{y},\tilde{z},\tilde{t}) exp\bigg(\int_{\tilde{z} = \tilde{z}_0} d\tilde{y} \quad \frac{-1}{f}\bigg(\frac{\partial f}{\partial \tilde{y}}+g\bigg)\bigg)\bigg]
+\end{equation}
+Thus we exactly showed that there are real, continuous and infinitely differentiable functions $G_1$ and $G_2$ (or alternatively functions $f$ and $g$) such that the velocity components $v$ and $w$ are given by the equations \ref{eqn13} and \ref{eqn14}. Once you find the components $v$ and $w$, finding $u$ seems easy with the relation \ref{eqn12}, but there's more to what is visible. From equation \ref{eqn12},
+\begin{equation} \label{eqn36}
+\frac{\partial F_1}{\partial \tilde{x}} = G_1 (\tilde{v}_{\tilde{y}}+\tilde{w}_{\tilde{z}}) - (\tilde{v}_{\tilde{y}\tilde{y}}+\tilde{w}_{\tilde{y}\tilde{z}}) - \frac{\partial G_1}{\partial \tilde{x}} \int_{\tilde{y}=\tilde{y}_1, \tilde{z}=\tilde{z}_1} (\tilde{v}_{\tilde{y}}+\tilde{w}_{\tilde{z}}) d\tilde{x}
+\end{equation}
+\begin{equation} \label{eqn37}
+\frac{\partial F_2}{\partial \tilde{x}} = G_2 (\tilde{v}_{\tilde{y}}+\tilde{w}_{\tilde{z}}) - (\tilde{v}_{\tilde{y}\tilde{z}}+\tilde{w}_{\tilde{z}\tilde{z}}) - \frac{\partial G_2}{\partial \tilde{x}} \int_{\tilde{y}=\tilde{y}_1, \tilde{z}=\tilde{z}_1} (\tilde{v}_{\tilde{y}}+\tilde{w}_{\tilde{z}}) d\tilde{x}
+\end{equation}
+And with equation \ref{eqn35} we can obtain the relation of $B_1, B_2$ (or equivalently, $F_1$ and $F_2$) with $G_1, G_2$ which completes the loop for the solution.
+\begin{equation*}
+\implies B_1 = \tilde{w}_{\tilde{x}} F_1 - \tilde{v}_{\tilde{x}} F_2, B_2 = \tilde{w}_{\tilde{x}\tilde{x}} F_1 - \tilde{v}_{\tilde{x}\tilde{x}} F_2
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial B_1}{\partial \tilde{x}} = \tilde{w}_{\tilde{x}\tilde{x}} F_1 + \tilde{w}_{\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}} - \tilde{v}_{\tilde{x}\tilde{x}} F_2 - \tilde{v}_{\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}} \implies \frac{\partial B_1}{\partial \tilde{x}} = B_2 + \tilde{w}_{\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}} - \tilde{v}_{\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}}
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial B_2}{\partial \tilde{x}} = \tilde{w}_{\tilde{x}\tilde{x}\tilde{x}} \bigg(\frac{B_1 \tilde{v}_{\tilde{x}\tilde{x}} + B_2 \tilde{v}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}\bigg) + \tilde{w}_{\tilde{x}\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}} - \tilde{v}_{\tilde{x}\tilde{x}\tilde{x}} \bigg(\frac{B_1 \tilde{w}_{\tilde{x}\tilde{x}} + B_2 \tilde{w}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}\bigg) - \tilde{v}_{\tilde{x}\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}}
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial B_2}{\partial \tilde{x}} = B_1 \frac{\tilde{w}_{\tilde{x}\tilde{x}\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}} - \tilde{w}_{\tilde{x}\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}} + B_2 \frac{\tilde{w}_{\tilde{x}\tilde{x}\tilde{x}} \tilde{v}_{\tilde{x}} - \tilde{w}_{\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}} + \tilde{w}_{\tilde{x}\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}} - \tilde{v}_{\tilde{x}\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}}
+\end{equation*}
+A few more steps of simplification gives the following,
+\begin{equation} \label{eqn38}
+\frac{\partial^2 B_1}{\partial \tilde{x}^2} + p(\vec{\tilde{r}}, \tilde{t}) \frac{\partial B_1}{\partial \tilde{x}} + q(\vec{\tilde{r}}, \tilde{t}) B_1 = h(\vec{\tilde{r}}, \tilde{t})
+\end{equation}
+\begin{equation} \label{eqn41}
+B_2 = \frac{\partial B_1}{\partial \tilde{x}} + \tilde{v}_{\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}} - \tilde{w}_{\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}}
+\end{equation}
+where the functions $p(\vec{\tilde{r}}, \tilde{t})$, $q(\vec{\tilde{r}}, \tilde{t})$ and $h(\vec{\tilde{r}}, \tilde{t})$ are given by,
+\begin{equation*}
+p(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) = \frac{\tilde{w}_{\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}\tilde{x}} - \tilde{w}_{\tilde{x}\tilde{x}\tilde{x}} \tilde{v}_{\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}},
+q(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) = \frac{\tilde{w}_{\tilde{x}\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}\tilde{x}} - \tilde{w}_{\tilde{x}\tilde{x}\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}}}{\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}}-\tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}},
+\end{equation*}
+\begin{equation*}
+h(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) = \bigg(\tilde{v}_{\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}} - \tilde{w}_{\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}}\bigg)\bigg(\frac{\tilde{w}_{\tilde{x}\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}-\tilde{w}_{\tilde{x}}\tilde{v}_{\tilde{x}\tilde{x}\tilde{x}}}{\tilde{w}_{\tilde{x}} \tilde{v}_{\tilde{x}\tilde{x}} - \tilde{w}_{\tilde{x}\tilde{x}}\tilde{v}_{\tilde{x}}}\bigg) + \tilde{w}_{\tilde{x}\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}} - \tilde{v}_{\tilde{x}\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}} + \frac{\partial}{\partial\tilde{x}}\bigg(\tilde{w}_{\tilde{x}} \frac{\partial F_1}{\partial \tilde{x}} - \tilde{v}_{\tilde{x}} \frac{\partial F_2}{\partial \tilde{x}}\bigg)
+\end{equation*}
+The equation resembles a second order linear ODE (it is a PDE with derivatives only with respect to the variable $\tilde{x}$). Let $H_1 = H_1(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t})$ and $H_2 = H_2(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t})$ be the solutions to the homogenous version of the equation,
+\begin{equation} \label{eqn39}
+\frac{\partial^2 H}{\partial \tilde{x}^2} + p(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) \frac{\partial H}{\partial \tilde{x}} + q(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) H = 0
+\end{equation}
+such that the solution to the equation \ref{eqn38} is given by the variation of parameters,
+\begin{equation*}
+B_1(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) = H_2(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) \int_{\tilde{x}_1 = -\infty}^{\tilde{x}_1 = \tilde{x}} \frac{H_1(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})h(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})d\tilde{x}_1}{W[H_1, H_2](\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})}
+\end{equation*}
+\begin{equation*}
+ - H_1(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) \int_{\tilde{x}_1 = -\infty}^{\tilde{x}_1 = \tilde{x}} \frac{H_2(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})h(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})d\tilde{x}_1}{W[H_1, H_2](\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})}
+\end{equation*}
+where $W[y_1, y_2] = y_1 \frac{\partial y_2}{\partial \tilde{x}} - y_2 \frac{\partial y_1}{\partial \tilde{x}}$ is the Wronskian with respect to $\tilde{x}$. The solutions to the equation \ref{eqn39} have been theoretically explored by the symbolic algorithms ascribed by \cite{galoistheory, kovacic}. As suggested by Kovacic, consider the variable transformation $H = Q \cdot exp(-\int_{-\infty}^{\tilde{x}} p(\tilde{x}_1)/2 \quad d\tilde{x}_1)$, which transforms the equation \ref{eqn39} into,
+\begin{equation*}
+\implies \frac{\partial H}{\partial \tilde{x}} = \bigg(\frac{\partial Q}{\partial \tilde{x}}-\frac{pQ}{2}\bigg)exp\bigg(-\int_{-\infty}^{\tilde{x}} p(\tilde{x}_1)/2 \quad d\tilde{x}_1\bigg)
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial^2 H}{\partial \tilde{x}^2} = \bigg(\frac{\partial^2 Q}{\partial \tilde{x}^2}-\frac{Q}{2}\frac{\partial p}{\partial \tilde{x}}-p\frac{\partial Q}{\partial \tilde{x}}+\frac{p^2}{4}Q\bigg)exp\bigg(-\int_{-\infty}^{\tilde{x}} p(\tilde{x}_1)/2 \quad d\tilde{x}_1\bigg)
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial^2 H}{\partial \tilde{x}^2} + p(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) \frac{\partial H}{\partial \tilde{x}} + q(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) H = 
+\end{equation*}
+\begin{equation*}
+\bigg(\frac{\partial^2 Q}{\partial \tilde{x}^2}-\frac{Q}{2}\frac{\partial p}{\partial \tilde{x}}-p\frac{\partial Q}{\partial \tilde{x}}+\frac{p^2}{4}Q+p\frac{\partial Q}{\partial \tilde{x}}-\frac{p^2 Q}{2}+qQ\bigg)exp\bigg(-\int_{-\infty}^{\tilde{x}} p(\tilde{x}_1)/2 \quad d\tilde{x}_1\bigg)
+\end{equation*}
+Thus the equation \ref{eqn39} gets transformed into
+\begin{equation}
+\frac{\partial^2 Q}{\partial \tilde{x}^2} = r(\tilde{x},\tilde{y},\tilde{z},\tilde{t})Q, r = \frac{p^2}{4} + \frac{1}{2} \frac{\partial p}{\partial \tilde{x}} - q
+\end{equation}
+Another similar transformation of variables of the form, $Q_w = \frac{-2}{Q} \frac{\partial Q}{\partial \tilde{x}}$ leads to the Riccati equation,
+\begin{equation} \label{eqn40}
+\frac{\partial Q_w}{\partial \tilde{x}} = \frac{Q_w^2}{2} - 2r(\tilde{x},\tilde{y},\tilde{z},\tilde{t})
+\end{equation}
+Possibilities of the closed form of the solutions of the Riccati equation have been explored by Kovacic \cite{kovacic}, and formally more developed in Picard-Vessiot theory \cite{galoistheory}, or even more easily as has been explored in \cite{pala}. But going along the lines for the predictability of local stability of flows for the 2D case (where we knew the existence of the solutions for the 2D Navier-Stokes equations by \cite{exactSolution}), we will have to have a concrete statement on the existence of the solution to the 3D Navier-Stokes equations using the solution using the equation \ref{eqn40}, which would lead to a unique solution for the equations \ref{eqn39}, \ref{eqn41}, \ref{eqn38}, \ref{eqn14} and \ref{eqn13} in that order of backtracking (we can think of equivalence of the appropriate boundary conditions). Now let us consider a problem with the given constraint that $\vec{u}(\vec{x}, t)|_{\vec{x} \in \Gamma} = \vec{u}_{\Gamma}(\vec{x}), \forall t \le 0$, $\Gamma$ denoting the boundary. One can trail down the hierarchy of the computation presented above to compute $r_{\Gamma}(\vec{x}) = r(\vec{x}, t)|_{\vec{x} \in \Gamma}, \forall t \le 0$, and the boundary condition on the functions $H_1$ and $H_2$ come from the evaluation of the function $B_2$ on $\Gamma$,
+\begin{equation*}
+\bigg(H_2(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) \int_{\tilde{x}_1 = -\infty}^{\tilde{x}_1 = \tilde{x}} \frac{H_1(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})h(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})d\tilde{x}_1}{W[H_1, H_2](\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})}
+\end{equation*}
+\begin{equation} \label{eqn41}
+- H_1(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t}) \int_{\tilde{x}_1 = -\infty}^{\tilde{x}_1 = \tilde{x}} \frac{H_2(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})h(\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})d\tilde{x}_1}{W[H_1, H_2](\tilde{x}_1, \tilde{y}, \tilde{z}, \tilde{t})}\bigg) \bigg|_{\vec{x} \in \Gamma}= B_1(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t})\bigg|_{\vec{x} \in \Gamma}, \forall t \ge 0
+\end{equation}
+Rolling back from the equation \ref{eqn40}, one can impose a boundary condition on the plane $Q_w(\tilde{x} = \tilde{x}_\Gamma) = Q_{w0}$ and another one to uniquely determine $Q$ such that $Q_w = -\frac{2}{Q}\frac{\partial Q}{\partial \tilde{x}}, H = Q \cdot exp(-\int p(\tilde{x}_1)^2/2 \quad d\tilde{x}_1)$, and then match the integration constants to that of the constraint imposed by the equation \ref{eqn41}. This, to a certain extent of accuracy (to be discussed sometime later), validates the formulation of an initial value problem $\frac{\partial Q_w}{\partial \tilde{x}} = \frac{Q_w^2}{2} - 2r, Q_w(\tilde{x} = \tilde{x}_\Gamma) = Q_{w0}$. The existence of the solution to this problem can be inferred from the Picard-Lindel\"of theorem: for an IVP, $y'(t) = f(t, y(t)), y(t_0) = y_0$, where $f$ is uniformly Lipshitz-continuous in $y$ and continuous in $t$, then for some value $\epsilon > 0$, there exists a unique solution $y(t)$ to the IVP on the interval $[t_0-\epsilon,t_0+\epsilon]$; a theorem which can be further proven from the Banach's fixed-point theorem on existence of fixed points on the contraction mappings. This proves the existence of the solution to the Navier-Stokes equations given boundary conditions on the steady state (or one that holds at all times). \\ \\
+One can also show that the non-dimensionalized 3D incompressible Navier-Stokes equation can be written as,
+\begin{equation} \label{eqn43}
+\frac{\partial}{\partial \tilde{t}}(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) - \tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}})\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}})) - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) = 0, \vec{\tilde{u} = \tilde{\nabla} \times \vec{\tilde{\psi}}}
+\end{equation}
+where the non-dimensionalised quantities are defined as before, even in the 2D case. The difference in the solvability of the problem in the 2D and 3D cases comes from the specialisation of the vorticity vector; for 2D case, $\vec{\tilde{\psi}} = \psi(\tilde{x},\tilde{y}) \hat{z}$, which simplifies to $\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}} = -\tilde{\nabla}^2 \tilde{\psi} \hat{z}$. In a weaker form, one has to seek solutions for the following equivalent integral,
+\begin{equation*}
+\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}} = \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0 + \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}})\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}})) + \operatorname{Re}^{-1} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) d\tilde{\tau}
+\end{equation*}
+Let us see if there are fixed "Picard iterates" to the following sequence of functions $\{\vec{\tilde{\psi}}_k\}, \vec{\tilde{\psi}}_k(\tilde{t} = 0) = \vec{\tilde{\psi}}_0$ ($u(\vec{x},t=0) = u_0(\vec{x}) = \nabla \times \vec{\psi}_0$),
+\begin{equation} \label{eqn42}
+\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_{k+1} = \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0 + \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \bigg(\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_k)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_k)) + \operatorname{Re}^{-1} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_k) \bigg)d\tilde{\tau}
+\end{equation}
+I would like to test the applicability on Banach fixed-point theorem on the equation \ref{eqn42}, where I choose the norm of the non-empty Banach space to be defined for any function $f : S \to S, S \in \mathbb{R}^3$, $||f||_{\infty, S} = \sup\{f(x): x \in S\}$ and a mapping $\Gamma$ defined by,
+\begin{equation*}
+\Gamma \vec{\tilde{\psi}}_{k} = \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0 + \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \bigg(\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_k)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_k)) + \operatorname{Re}^{-1} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_k) \bigg)d\tilde{\tau}
+\end{equation*}
+To show the existence of the solution, one needs to show the existence of a fixed point of $\Gamma \vec{\psi} = \vec{\psi}$. For the Banach fixed-point theorem, there need to be proven two supporting premises : $||\vec{\tilde{\psi}}-\vec{\tilde{\psi}}_0||_{\infty}\le B \implies \bigg|\Gamma \vec{\tilde{\psi}} - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty}\le B$ and $\forall \vec{\tilde{\psi}}_1, \vec{\tilde{\psi}}_2, \exists \sigma < 1, |\Gamma\vec{\tilde{\psi}}_1 - \Gamma\vec{\tilde{\psi}}_2|_{\infty} < \sigma |\vec{\tilde{\psi}}_1 - \vec{\tilde{\psi}}_2|_{\infty}$ (I will be alternatively using the notations $||f||_{\infty}$ and $|f|_{\infty}$ for the same norm).
+\begin{equation*}
+\implies \bigg|\Gamma \vec{\tilde{\psi}}_k - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty} = \bigg|\int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \bigg(\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_k)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_k)) + \operatorname{Re}^{-1} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_k) \bigg)d\tilde{\tau}\bigg|
+\end{equation*}
+\begin{equation*}
+\implies \bigg|\Gamma \vec{\tilde{\psi}}_k - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty} \le \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \bigg|\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_k)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_k)) + \operatorname{Re}^{-1} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_k) \bigg|d\tilde{\tau}
+\end{equation*}
+\begin{equation*}
+\implies \bigg|\Gamma \vec{\tilde{\psi}}_k - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty} \le \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \bigg|\tilde{\nabla} \times (\vec{\tilde{u}}_k\times(\tilde{\nabla} \times \vec{\tilde{u}}_k)) + \operatorname{Re}^{-1} \tilde{\nabla}^2(\tilde{\nabla}\times\vec{\tilde{u}}_k) \bigg|d\tilde{\tau}, \vec{\tilde{u}}_k = \tilde{\nabla} \times \vec{\tilde{\psi}}_k
+\end{equation*}
+\begin{equation*}
+\implies \bigg|\Gamma \vec{\tilde{\psi}}_k - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty} \le \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} \bigg|\bigg|\tilde{\nabla} \times (\vec{\tilde{u}}_k\times(\tilde{\nabla} \times \vec{\tilde{u}}_k))\bigg|\bigg| + \operatorname{Re}^{-1} \bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times\vec{\tilde{u}}_k)\bigg|\bigg|d\tilde{\tau}
+\end{equation*}
+Since we require $u, v, w \in C^{\infty}$, a physical intuition is to consider $\vec{u}_k \in C^{\infty}$. It is known that the set of functions in $C^{\infty}$ over any open subset of $\mathbb{R}$ forms a Frechet vector space with the seminorm $p_{K, m} = \sup_{x \in K} |f^{(m)}(x)|, f:K\to K, K \subseteq \mathbb{R}, f \in C^m$. And given that we have the functions in the Banach vector space (a complete normed vector space), $p_{K, m} = \sup_{x \in K} ||f^{(m)}(x)||>0$. All of these infer the existence of reals $M_1, M_2 > 0$, such that $\bigg|\bigg|\tilde{\nabla} \times (\vec{\tilde{u}}_k\times(\tilde{\nabla} \times \vec{\tilde{u}}_k))\bigg|\bigg| \le M_1, \forall \vec{r}, t$ and $\bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times\vec{\tilde{u}}_k)\bigg|\bigg| \le M_2, \forall \vec{r}, t$. Thus,
+\begin{equation*}
+\implies \bigg|\Gamma \vec{\tilde{\psi}}_k - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty} \le \int_{\tilde{\tau} = 0}^{\tilde{\tau} = \tilde{t}} M_1 + \frac{M_2}{\operatorname{Re}}d\tilde{\tau} = \bigg(M_1 + \frac{M_2}{\operatorname{Re}}\bigg)\tilde{t}
+\end{equation*}
+Thus, $||\vec{\tilde{\psi}}-\vec{\tilde{\psi}}_0||_{\infty}\le B \implies \bigg|\Gamma \vec{\tilde{\psi}} - \tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}_0\bigg|_{\infty}\le B$ implies there exists $\tilde{t}_0 \le \frac{\operatorname{Re} B}{\operatorname{Re}M_1+M_2}$ such that $||\vec{\tilde{\psi}}-\vec{\tilde{\psi}}_0||_{\infty}<B$ and $\bigg|\bigg|\tilde{\nabla} \times (\vec{\tilde{u}}_k\times(\tilde{\nabla} \times \vec{\tilde{u}}_k))\bigg|\bigg| \le M_1, \bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times\vec{\tilde{u}}_k)\bigg|\bigg| \le M_2, \forall \vec{\tilde{r}}, 0 < \tilde{t} < \tilde{t}_0$. Next, we consider the possibility of the premise,
+\begin{equation*}
+\exists \sigma < 1, |\Gamma\vec{\tilde{\psi}}_1 - \Gamma\vec{\tilde{\psi}}_2|_{\infty} \le \sigma |\vec{\tilde{\psi}}_1 - \vec{\tilde{\psi}}_2|_{\infty}
+\end{equation*}
+\begin{equation*}
+\implies |\Gamma\vec{\tilde{\psi}}_1 - \Gamma\vec{\tilde{\psi}}_2|_{\infty} = \bigg|\bigg|\int_{\tilde{\tau}=0}^{\tilde{\tau}=\tilde{t}_0}\operatorname{Re}^{-1}\tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}
+\times(\tilde{\psi}_1-\tilde{\psi}_2)) + 
+\end{equation*}
+\begin{equation*}
+\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_1)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_1)) - \tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_2)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_2))d\tilde{\tau}\bigg|\bigg|_{\infty}
+\end{equation*}
+\begin{equation*}
+\implies |\Gamma\vec{\tilde{\psi}}_1 - \Gamma\vec{\tilde{\psi}}_2| \le \int_{\tilde{\tau}=0}^{\tilde{\tau} = \tilde{t}_0} d\tilde{\tau} \operatorname{Re}^{-1} \bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}
+\times(\tilde{\psi}_1-\tilde{\psi}_2))\bigg|\bigg| + 
+\end{equation*}
+\begin{equation*}
+\bigg|\bigg|\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_1)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_1)) - \tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_2)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_2))\bigg|\bigg|
+\end{equation*}
+\begin{equation*}
+\implies |\Gamma\vec{\tilde{\psi}}_1 - \Gamma\vec{\tilde{\psi}}_2| \le 2 \int_{\tilde{\tau}=0}^{\tilde{\tau} = \tilde{t}_0} d\tilde{\tau} \operatorname{Re}^{-1} \bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}
+\times\tilde{\psi}_1)\bigg|\bigg| + \bigg|\bigg|\tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}}_1)\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}_1))\bigg|\bigg|
+\end{equation*}
+As has been discussed before the existence of reals $M_1, M_2 > 0$, such that $\bigg|\bigg|\tilde{\nabla} \times (\vec{\tilde{u}}_k\times(\tilde{\nabla} \times \vec{\tilde{u}}_k))\bigg|\bigg| \le M_1, \forall \vec{\tilde{r}}, \tilde{t}$ and $\bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times\vec{\tilde{u}}_k)\bigg|\bigg| \le M_2, \forall \vec{\tilde{r}}, \tilde{t}$,
+\begin{equation*}
+\implies |\Gamma\vec{\tilde{\psi}}_1 - \Gamma\vec{\tilde{\psi}}_2| \le 2 \tilde{t}_0 \bigg(\frac{M_2}{\operatorname{Re}}+M_1\bigg)
+\end{equation*}
+We can also infer that $|\vec{\tilde{\psi}}-\vec{\tilde{\psi}}_0|\le B \implies |\vec{\tilde{\psi}}_1-\vec{\tilde{\psi}}_2| = |(\vec{\tilde{\psi}}_1-\vec{\tilde{\psi}}_0)-(\vec{\tilde{\psi}}_2-\vec{\tilde{\psi}}_0)| \le |\vec{\tilde{\psi}}_1-\vec{\tilde{\psi}}_0|+|\vec{\tilde{\psi}}_2-\vec{\tilde{\psi}}_0| \le 2B \implies |\vec{\tilde{\psi}}_1-\vec{\tilde{\psi}}_2| \le 2B$. This implies $\forall \sigma < 1, \sigma < \frac{\tilde{t}_0}{B}\bigg(\frac{M_2}{\operatorname{Re}}+M_1\bigg) \implies \tilde{t}_0 \ge \frac{\operatorname{Re} B}{\operatorname{Re} M_1 + M_2}$.  Thus applying the Banach's fixed-point theorem, there exists a unique solution to the equation,
+\begin{equation*}
+\frac{\partial}{\partial \tilde{t}}(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) - \tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}})\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}})) - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) = 0, \tilde{\psi}(\vec{\tilde{r}},\tilde{t} = 0) = \tilde{\psi}_0
+\end{equation*}
+which satisfies the condition that $||\vec{\tilde{\psi}}-\vec{\tilde{\psi}}_0||_{\infty}<B$ and $\bigg|\bigg|\tilde{\nabla} \times (\tilde{\nabla} \times \vec{\tilde{\psi}} \times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}))\bigg|\bigg| \le M_1, \bigg|\bigg|\tilde{\nabla}^2(\tilde{\nabla}\times \tilde{\nabla} \times \vec{\tilde{\psi}})\bigg|\bigg| \le M_2, \forall \vec{\tilde{r}} \in \mathbb{R}^3, 0 \le \tilde{t} < \frac{\operatorname{Re} B}{\operatorname{Re} M_1 + M_2}$. However the existence of the unique solution to this equation suggests the possibility of the finite time blowup of the solution, for the case that the bound on the stream function $B$ is finite. But is it necessary though? Well, one can look at it from a basic but different aspect; for the equation \ref{eqn43}, if $\tilde{\psi} \in C^{\infty}$ is a solution, then $\tilde{\psi}_1 = \tilde{\psi} + \tilde{\nabla} \phi_A, \phi_A \in C^{\infty} \implies \tilde{\psi}_1 \in C^{\infty}$ is also solution to the same equation \ref{eqn43}. One can definitely construct a solution such that $\tilde{\psi}_1 = \tilde{\psi} + \tilde{\nabla} \phi_A, \phi_A \in C^{\infty}$, $\phi_A(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t} = 0) = \phi_B, \phi_B \in \mathbb{R} \implies \tilde{\psi}_1(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t} = 0) = \tilde{\psi}(\tilde{x}, \tilde{y}, \tilde{z}, \tilde{t} = 0) = \tilde{\psi}_0(\tilde{x}, \tilde{y}, \tilde{z})$ such that $\forall M_0 \in \mathbb{R}, M_0 > 0, \exists \tilde{x}_1, \tilde{y}_1, \tilde{z}_1 \in \mathbb{R}, \tilde{t}_1 \in [0,\infty), ||\tilde{\psi}_1(\tilde{x}_1,\tilde{y}_1,\tilde{z}_1,\tilde{t}_1)-\tilde{\psi}_0(\tilde{x}_1,\tilde{y}_1,\tilde{z}_1)||_{\infty} = M_0$ (indirectly meaning that $\tilde{\nabla} \phi_A$, and equivalently, $\tilde{\psi}_1$, is unbounded). Thus, one can have a solution for the equation \ref{eqn43} such that the stream function $\tilde{\psi}$ stays unbounded (which is not a direct physical observable to be cared about for physical feasibility) whereas the velocity field can satisfy the condition $\tilde{u} \in C^{\infty}$ such that $\forall K > 0, \exists C_{\alpha K} > 0, \bigg|\frac{\partial^{\alpha_1+\alpha_2+\alpha_3} \tilde{u}}{\partial \tilde{x}^{\alpha_1} \partial \tilde{y}^{\alpha_2} \partial \tilde{z}^{\alpha_3}}\bigg| \le C_{\alpha K}(1+|\tilde{r}|)^{-K}, \alpha = \langle \alpha_1, \alpha_2, \alpha_3\rangle, \vec{\tilde{r}} = \langle \tilde{x}, \tilde{y}, \tilde{z}\rangle$, and as a consequence of the Banach's fixed-point theorem, the solution for equation \ref{eqn43} holds good for $0 \le \tilde{t} < \infty$. This sketches the existence of the unique solution to the 3D Navier-Stokes equations by means of a physical intuition that the velocity field remains smooth all throughout. Now we can see if there can be a description of the irregularities in the flow by means of the vorticity transport, as we did for the 2D case. Let us revisit the equation,
+\begin{equation*}
+\frac{\partial}{\partial \tilde{t}}(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2(\tilde{\nabla}\times\tilde{\nabla}\times\vec{\tilde{\psi}}) = \tilde{\nabla} \times ((\tilde{\nabla} \times \vec{\tilde{\psi}})\times(\tilde{\nabla} \times \tilde{\nabla} \times \vec{\tilde{\psi}}))
+\end{equation*}
+\begin{equation*}
+\implies \frac{\partial\vec{\tilde{\omega}}}{\partial \tilde{t}} - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2 \vec{\tilde{\omega}} = \tilde{\nabla} \times (\vec{\tilde{u}}\times \tilde{\omega})
+\end{equation*}
+Let us choose the activity of the vorticity of fluid motion along a slice of the plane whose normal is given by $\hat{n}$,
+\begin{equation*}
+\implies \frac{\partial\vec{\tilde{\omega}}\cdot \hat{n}}{\partial \tilde{t}} - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2 \vec{\tilde{\omega}} \cdot \hat{n} = (\tilde{\nabla} \times (\vec{\tilde{u}}\times \tilde{\omega})) \cdot \hat{n}, \tilde{\omega} = \tilde{\nabla} \times \vec{\tilde{u}} \text{ and }  \vec{\tilde{u}} = \tilde{\nabla} \times \vec{\tilde{\psi}}
+\end{equation*}
+As had been done as an exercise in the 2D case, the left hand side of the equation is a linear operator $L_1 = \frac{\partial}{\partial \tilde{t}} - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2 \implies L_1 \vec{\tilde{\omega}} \cdot \hat{n}  = \frac{\partial\vec{\tilde{\omega}}\cdot \hat{n}}{\partial \tilde{t}} - \frac{1}{\operatorname{Re}} \tilde{\nabla}^2 \vec{\tilde{\omega}} \cdot \hat{n}$ and the right hand side is a non-linear operation which, by identity, includes the familiar advective term. And as has been revisited before, the negative of the Laplacian is positive-definite, $\tilde{\nabla}^2 \vec{\tilde{\omega}} \cdot \hat{n} = -\lambda_1^2 \quad \vec{\tilde{\omega}} \cdot \hat{n}, \lambda_1 \in \mathbb{R}$. Also, the eigenfunctions of the operator are bounded when $\frac{\partial\vec{\tilde{\omega}}\cdot \hat{n}}{\partial \tilde{t}} = i\mu_1 \vec{\tilde{\omega}}\cdot \hat{n}, \mu_1 \in \mathbb{R}$, i.e. the function $\vec{\tilde{\omega}}\cdot \hat{n}$ is periodic or when $\frac{\partial\vec{\tilde{\omega}}\cdot \hat{n}}{\partial \tilde{t}} = -\mu_2 \vec{\tilde{\omega}}\cdot \hat{n}, \mu_2 \in \mathbb{R}, \mu_2 > 0$, i.e. the function $\vec{\tilde{\omega}}\cdot \hat{n}$ is exponentially decaying in time. Thereby, I define the \textit{local advective rate of vorticity transport} (LARVT) for the 3D case,
+\begin{equation*}
+\xi(\tilde{t},\vec{\tilde{r}}) = \frac{(\tilde{\nabla} \times (\vec{\tilde{\omega}}\times \vec{\tilde{u}})) \cdot \hat{n}}{\tilde{\omega} \cdot \hat{n}} = \frac{((\vec{\tilde{u}}\cdot\tilde{\nabla})\vec{\tilde{\omega}})\cdot\hat{n} - ((\vec{\tilde{\omega}}\cdot\tilde{\nabla})\vec{\tilde{u}})\cdot\hat{n}}{\tilde{\omega} \cdot \hat{n}} = \mu_2(\tilde{t},\vec{\tilde{r}}) - \frac{\lambda_1(\tilde{t},\vec{\tilde{r}})^2}{\operatorname{Re}}
+\end{equation*}
+where,
+\begin{equation*}
+\lambda_1(\tilde{t},\vec{\tilde{r}})^2 = \frac{-\tilde{\nabla}^2 \vec{\tilde{\omega}} \cdot \hat{n}}{\vec{\tilde{\omega}} \cdot \hat{n}}, \mu_2(\tilde{t},\vec{\tilde{r}}) = \frac{-1}{\vec{\tilde{\omega}}\cdot \hat{n}} \frac{\partial\vec{\tilde{\omega}}\cdot \hat{n}}{\partial \tilde{t}}
+\end{equation*}
+For every point $\vec{r} = \vec{r}_0 \in \mathbb{R}^3$, there could exist a minimum zero (or if possible, just the only zero) of the function $\xi(\tilde{t},\vec{\tilde{r}}_0)$ at $\tilde{t} = \tilde{t}_{crit}, \mu_2(\tilde{t}_{crit},\vec{\tilde{r}}_0) = \frac{\lambda_1(\tilde{t}_{crit},\vec{\tilde{r}}_0)^2}{\operatorname{Re}}$ where the vorticity behaviour changes, just the way we saw in 2D flows. For $\operatorname{Re} << 1$, this critical time scale goes longer and longer; thus for highly viscous flows we can expect a particular flow state of the system to maintain itself for a really long time without much change; and for $\operatorname{Re} >> 1$, any current state of flow is transient and short-lived. \\ \\
+The definition of the LARVT for the general case of a 3D flow has been given as,
+\begin{equation} \label{eqn44}
+\xi(\tilde{t},\vec{\tilde{r}}) = \frac{(\vec{\tilde{u}}\cdot\tilde{\nabla})(\vec{\tilde{\omega}}\cdot\hat{n}) - (\vec{\tilde{\omega}}\cdot\tilde{\nabla})(\vec{\tilde{u}}\cdot\hat{n})}{\vec{\tilde{\omega}} \cdot \hat{n}}
+\end{equation}
+The first term of the above expression is reminiscent of the definition for the 2D flow case, the advection operator acting on vorticity. The second term is the familiar vortex stretching and tilting term, which changes the geometrical make-up of the vortex in a local neighbourhood. For some simplicity, let us choose the normal $\hat{n}$ that adapts itself with the flow as in the following definition,
+\begin{equation*}
+\hat{n} = \begin{cases}
+\frac{\vec{\tilde{u}}\times\vec{a}}{|\vec{\tilde{u}}\times\vec{a}|}, & \vec{\tilde{\omega}}\cdot(\vec{\tilde{u}}\times\vec{a})>0 \\
+\frac{\vec{a}\times\vec{\tilde{u}}}{|\vec{\tilde{u}}\times\vec{a}|}, & \vec{\tilde{\omega}}\cdot(\vec{\tilde{u}}\times\vec{a})<0
+\end{cases}
+\end{equation*}
+where $\vec{a} \in \mathbb{R}^3, \vec{a} \ne \vec{\tilde{\omega}}, \vec{a} \times \vec{\tilde{u}}\ne 0 \implies \vec{\tilde{\omega}}\times(\vec{\tilde{u}}\times\vec{a}) \ne 0$. This simplifies $\vec{\tilde{u}} \cdot \hat{n} = 0$ and,
+\begin{equation*}
+\xi = \frac{1}{f_\gamma}(\vec{\tilde{u}}\cdot\tilde{\nabla})f_\gamma = (\vec{\tilde{u}}\cdot\tilde{\nabla})log(f_\gamma), \vec{\tilde{\omega}}\cdot\hat{n} = f_\gamma = \frac{|\vec{\tilde{\omega}}\cdot(\vec{\tilde{u}}\times\vec{a})|}{|\vec{\tilde{u}}\times\vec{a}|}
+\end{equation*}
+One instance of the choice of vector $\vec{a}_0 = \vec{\tilde{\omega}} \times \vec{\tilde{u}}$ leading to $f_{\gamma 0} = \frac{|\vec{\tilde{\omega}}\cdot(\vec{\tilde{u}}\times(\vec{\tilde{\omega}} \times \vec{\tilde{u}}))|}{|\vec{\tilde{u}}\times(\vec{\tilde{\omega}} \times \vec{\tilde{u}})|}$, which will revisit later. For any $\vec{a}$, the governing equation simplifies to,
+\begin{equation*}
+\xi = (\vec{\tilde{u}}\cdot\tilde{\nabla})\operatorname{log}(f_\gamma) = \tilde{u} \frac{\partial}{\partial \tilde{x}}\operatorname{log}(f_\gamma) + \tilde{v} \frac{\partial}{\partial \tilde{y}}\operatorname{log}(f_\gamma) + \tilde{w} \frac{\partial}{\partial \tilde{z}}\operatorname{log}(f_\gamma)
+\end{equation*}
+Let us consider an arbitrary region $\Gamma_f = \{\langle \tilde{x}_1, \tilde{y}_1, \tilde{z}_1 \rangle: \tilde{x}_0-\delta\tilde{x}_0<\tilde{x}_1<\tilde{x}_0+\delta\tilde{y}_0, \tilde{y}_0-\delta\tilde{y}_0<\tilde{y}_1<\tilde{y}_0+\delta\tilde{y}_0, \tilde{z}_0-\delta\tilde{z}_0<\tilde{z}_1<\tilde{z}_0+\delta\tilde{z}_0\}$, such that $\frac{\delta\tilde{x}_0}{\tilde{x}_0}, \frac{\delta\tilde{y}_0}{\tilde{y}_0}, \frac{\delta\tilde{z}_0}{\tilde{z}_0} << 1$, where we solve this equation. Here, we will be proving the existence of at least one such $\tilde{t} = \tilde{t}_{crit}$ such that $\mu_3(\tilde{t}_{crit}) = \operatorname{Re}^{-1}\lambda_2(\tilde{t}_{crit})^2$, $\mu_3(\tilde{t}) = \mu_2(\tilde{t},\tilde{x}_0, \tilde{y}_0, \tilde{z}_0)$ and $\lambda_2(\tilde{t}) = \lambda_1(\tilde{t},\tilde{x}_0, \tilde{y}_0, \tilde{z}_0)$. From the Lagrange-Charpit equations, as we had revisited for the 2D flows, one can parametrise the solution in terms of a parametric variable $s, x(s\to-\infty) = x_0 - \delta x_0, y(s\to-\infty) = y_0 - \delta y_0, z(s\to-\infty) = z_0 - \delta z_0$ to obtain $\frac{d\tilde{x}}{ds} = \tilde{u}(\tilde{x},\tilde{y},\tilde{z},\tilde{t}), \frac{d\tilde{y}}{ds} = \tilde{v}(\tilde{x},\tilde{y},\tilde{z},\tilde{t}), \frac{d\tilde{z}}{ds} = \tilde{w}(\tilde{x},\tilde{y},\tilde{z},\tilde{t})$ and,
+\begin{equation*}
+\operatorname{log}(f_\gamma) = \int_{\tilde{s}=-\infty}^{\tilde{s} = s} \xi(\tilde{x}(\tilde{s}),\tilde{y}(\tilde{s}),\tilde{z}(\tilde{s}),\tilde{t}) d\tilde{s}
+\end{equation*}
+Going along similar lines as the 2D flow, if one assumes that $\forall \vec{\tilde{r}} \in \Gamma_f, \xi(\vec{\tilde{r}}(\tilde{s}),\tilde{t}) \ge 0$, there would be a contradiction for a point where $\operatorname{log}(f_\gamma)$ goes negative, and conversely, if one assumes that $\forall \vec{\tilde{r}} \in \Gamma_f, \xi(\vec{\tilde{r}}(\tilde{s}),\tilde{t}) \le 0$, there would be a contradiction for a point where $\operatorname{log}(f_\gamma)$ goes positive. Thus, one can state that $\xi: \mathbb{R}^3 \times [0, \infty) \to [\operatorname{log}(m),\operatorname{log}(M)], 0 \le m < 1, M > 1$, where $m = \inf_{\vec{\tilde{r}}\in\Gamma_f,\tilde{t}\in[0, \infty)} f_\gamma(\vec{\tilde{r}},\tilde{t})$ and $M = \sup_{\vec{\tilde{r}}\in\Gamma_f,\tilde{t}\in[0, \infty)} f_\gamma(\vec{\tilde{r}},\tilde{t})$, implying the existence of at least one zero of the LARVT function (equivalently the critical time scale $\tilde{t}_{crit}$). Since $\mu_3 = \frac{-1}{f_\gamma}\frac{\partial f_\gamma}{\partial \tilde{t}} = \frac{-1}{\vec{\tilde{\omega}}\cdot \hat{n}} \frac{\partial\vec{\tilde{\omega}}\cdot \hat{n}}{\partial \tilde{t}}$ and $\mu_3(\tilde{t}_{crit}) = \operatorname{Re}^{-1}\lambda_2(\tilde{t}_{crit})^2$, for low Reynolds number, the current state of the velocity field (as is consequent from the vorticity field) decays in strength but is maintained for a long time; and for high Reynolds number, every state of the flow is short-lived and emergent; an observation similar to the 2D flow case. \\ \\
+In the figure this, a striking match between the LARVT computed treating the flow problem past a cylinder as a 2D problem and the same as a 3D problem for a cylinder with a small (but finite) thickness has been shown, as has been computed from the FreeFEM solver as is required; in the latter, we use the definition mentioned in equation \ref{eqn44} with $\vec{a} = \hat{z}$, and the small deviations arise due to the numerical inaccuracies of the second term in the equation \ref{eqn44}. However the behaviour of the solution is greatly marked by the zeroes of the LARVT and their density as shown in figures such and such, plotted for the known benchmark problems of the lid-driven cavity and the flow past a sphere. It is observed that the local advective rate of the vorticity transport (and particularly, it's zeroes) directly dictates the transient fate of the flow around a point. \\ \\
+The following summarises the article; the mathematical aspects of the nature of the behaviour of the solution to the 2D Navier-Stokes incompressible flows were discussed when the proposition of the local advective rate of the vorticity transport arises. Having known the existence and the uniqueness of the solution to the 2D Navier-Stokes equations, the LARVT is shown to directly exhibit the emergence of the local irregularities in the solution which directly impact the global behaviour. A similar exercise is carried with the 3D Navier-Stokes incompressible flow, except that the existence, uniqueness and regularity of the solutions were unknown a priori. A brief treatise on the same is provided which inspires elementary confidence on the existence of the solution; a major difficulty of the blowup time being subverted by a special construction of the solution. Then the same exercise of hunting for a stable solution helps one define the LARVT in a similar way as for 2D solutions; with similar behaviour of indication to serve the purpose of assertion.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.40]{LARVTRe1500Cylinder2D3D.png}
+\caption{\label{Fig6} The variation of LARVT (in s$^{-1}$ or $\operatorname{Hz}$) with time (in s) for flow across a cylinder of length $h$ and radius $r$ in a domain of dimensions $L\times L\times h, h/L<<1, r \sim L$ ($h/L = 10^{-4}$ as set in the computation in the FreeFEM solver) for a constant Reynolds number $\operatorname{Re} = 1500$.}
+\end{center}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.25]{LARVT3DLidRe0o1.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe1.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe10.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe100.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe500.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe1000.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe3200.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe5000.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe10000.png}
+\includegraphics[scale=0.25]{LARVT3DLidRe15000.png}
+\caption{\label{Fig7} The variation of LARVT (in s$^{-1}$, as defined by $\xi_0 = (\vec{\tilde{u}}\cdot\tilde{\nabla})\operatorname{log}(f_{\gamma 0})$) with time (in s) for flow in a lid-driven cavity for Reynolds numbers $\operatorname{Re} = 0.1, 1, 10, 100, 500, 1000, 3200, 5000, 10^4$ and $ 1.5\times10^4$ respectively. The cavity is really a cube $\Gamma = \{\vec{\tilde{r}} = \langle \vec{\tilde{x}}, \vec{\tilde{y}}, \vec{\tilde{z}} \rangle: \vec{\tilde{r}} \in [0, 1]\times[0, 1]\times[0, 1]\}$ where the lid at $\vec{\tilde{z}} = 1$ moves with the velocity as determined by the Reynolds number. The LARVT is computed at the point $\langle 0.75, 0.75, 0.75\rangle$ (an arbitrary choice) . The trend illustrated above conforms with the observations made in \cite{dsamantaray}, from where the choice of the Reynolds numbers is inspired. The increasing number of zeroes clearly indicate the level of turbulence near the lid.}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe0o01.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe0o1.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe0o2.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe0o3.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe1.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe2.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe5.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe7.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe12.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe17.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe22.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe46.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe83.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe100.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe120.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe140.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe150.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe500.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe10p3.png}
+\includegraphics[scale=0.19]{LARVT3DCylinderRe510p4.png}
+\caption{\label{Fig7} The variation of LARVT (in s$^{-1}$, as defined by $\xi_0 = (\vec{\tilde{u}}\cdot\tilde{\nabla})\operatorname{log}(f_{\gamma 0})$) with time (in s) for flow past a sphere for Reynolds numbers $\operatorname{Re} = 0.01, 0.1, 0.2, 0.3, 1, 2, 5, 7, 12, 17, 22, 46, 83, 100, 120, 140, 150, 500, 1000$ and $5\times10^4$ respectively. The LARVT is computed at an arbitrary (but fixed) point in the wake of the sphere. The trend illustrated above conforms with the observations made in \cite{southard}, from where the choice of the Reynolds numbers is inspired. The increasing number of zeroes clearly indicate the level of turbulence near the lid.}
+\end{figure}
+\section*{Appendix: Properties of the solution to the DE $f''(x)=r(x)f(x)$}
+To begin with, let us consider some solutions to the 1-D time-independent Schr\"odinger equation,
+\begin{equation*}
+-\frac{\hbar^2}{2 m} \frac{d^2 \psi}{d x^2} = \bigg[E-V(x)\bigg]\psi(x) \implies \frac{d^2 \psi}{d x^2} = \frac{\hbar^2}{2 m}\bigg[V(x)-E\bigg]\psi(x)
+\end{equation*}
+where I am considering the potential,
+\begin{equation*}
+V(x) = \begin{array}{cc}
+  \bigg\{ & 
+    \begin{array}{cc}
+      V_0 & x\leq -\frac{L}{2} \\
+      0 & -\frac{L}{2}\leq x\leq \frac{L}{2} \\
+      V_0 & x\geq \frac{L}{2} \\
+    \end{array}
+\end{array}
+\end{equation*}
+where $V_0>0$. The solution we seek are of the form $\begin{array}{cc}\bigg\{ & \begin{array}{cc}
+      \psi_1 & x\leq -\frac{L}{2} \\
+      \psi_2 & -\frac{L}{2}\leq x\leq \frac{L}{2} \\
+      \psi_3 & x\geq \frac{L}{2} \\
+    \end{array}
+\end{array}$
+where $\psi_1(-L/2)=\psi_2(-L/2),\psi_1'(-L/2)=\psi_2'(-L/2),\psi_2(L/2)=\psi_3(-L/2),\psi_2'(L/2)=\psi_3(-L/2)$. The particular solutions in the case $E > V_0$ are of the form,
+\begin{equation*}
+\psi_1(x) = A_0 sin\bigg(\sqrt{\frac{2 m E_1}{\hbar^2}} x\bigg) + B_0 cos\bigg(\sqrt{\frac{2 m E_1}{\hbar^2}} x\bigg)
+\end{equation*}
+\begin{equation*}
+\psi_2(x) = A_1 sin\bigg(\sqrt{\frac{2 m E}{\hbar^2}} x\bigg) + B_1 cos\bigg(\sqrt{\frac{2 m E}{\hbar^2}} x\bigg)
+\end{equation*}
+\begin{equation*}
+\psi_3(x) = A_2 sin\bigg(\sqrt{\frac{2 m E_1}{\hbar^2}} x\bigg) + B_2 cos\bigg(\sqrt{\frac{2 m E_1}{\hbar^2}} x\bigg)
+\end{equation*}
+where $E_1 = E-V_0$ and $A_0, A_1, A_2, B_0, B_1$ and $B_2$ are determined by the boundary conditions. Here we find that $E > V_0 \implies V_0 - E < 0$ leads to necessarily bounded solutions. On the contrary, we find that the solutions in $E < V_0 \implies V_0 > E$ leads to either monotonically decreasing or monotonically increasing solutions in that regime, $V_0 - E = E_1$,
+\begin{equation*}
+\psi_1(x) = A_0 exp\bigg(\sqrt{\frac{2 m E_1}{\hbar^2}} x\bigg) + B_0 exp\bigg(\sqrt{-\frac{2 m E_1}{\hbar^2}} x\bigg)
+\end{equation*}
+\begin{equation*}
+\psi_2(x) = A_1 sin\bigg(\sqrt{\frac{2 m E}{\hbar^2}} x\bigg) + B_1 cos\bigg(\sqrt{\frac{2 m E}{\hbar^2}} x\bigg)
+\end{equation*}
+\begin{equation*}
+\psi_3(x) = A_2 exp\bigg(\sqrt{\frac{2 m E_1}{\hbar^2}} x\bigg) + B_2 exp\bigg(\sqrt{-\frac{2 m E_1}{\hbar^2}} x\bigg)
+\end{equation*}
+The physically stable states of the solution correspond to $A_0 = A_2 = 0$, but it is necessarily important to monotonically decreasing solution. The other possibility is the unbounded state but it is necessarily important to monotonically increasing solution. One can postulate that for a general equation $\frac{d^2 f_2(x)}{d x^2} = r(x) f_2(x)$ , there are necessarily bounded solutions to the case where $r(x) < 0$ and there are possible unbounded solutions to the case where $r(x) > 0$. Now we come to an important claim that will be proved in the following paragraphs:
+\paragraph{Claim 1} If in any domain $x \in [a,b]$, $r(x) > 0 \forall x \in [a,b]$ then the solution $f(x)$ to the equation $\frac{1}{f} \frac{d^2 f}{d x^2} = r(x)$ either monotonically decreases or monotonically increases $\forall x, x \in [a,b]$.
+\paragraph{Claim 2} If in any domain $x \in [a,b]$, $r(x) < 0 \forall x \in [a,b]$ then the solution $f(x)$ to the equation $\frac{1}{f} \frac{d^2 f}{d x^2} = r(x)$ is bounded i.e. $\exists M \in \mathbb{R}$, $|f(x)|<M \forall x \in [a,b]$. \\
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Example1.png}
+\caption{\label{fig1} The solution to the equation $f''(x)=r(x)f(x), r(x) = -r_0 x^2 (x^2-L^2/4)^2$, $f(0)=1, f(L/2) = 0, r_0 = 3.4, L = 2$.}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Example2.png}
+\caption{\label{fig2} The solution to the equation $f''(x)=r(x)f(x), r(x) = r_0 cos^2(\pi x/L)$, $f(0)=1, f(L/2) = 0, r_0 = 3.4, L = 2$.}
+\end{center}
+\end{figure}
+\\\
+Some examples are illustrated in the figures \ref{fig1} and \ref{fig2}. Now to prove, let us choose $x \in [x_1, x_2], a\le x_1 \le x_2 \le b$, and using the mean value theorem, we can say that $\exists x_0, x_0 \in (x_1, x_2)$, such that,
+\begin{equation*}
+f''(x_0) = \frac{f'(x_2)-f'(x_1)}{x_2-x_1}
+\end{equation*}
+And since $f''(x_0) = r(x_0) f(x_0)$,
+\begin{equation*}
+\implies r(x_0) f(x_0) = \frac{f'(x_2)-f'(x_1)}{x_2-x_1} \implies r(x_0) = \frac{f'(x_2)-f'(x_1)}{(x_2-x_1) f(x_0)}
+\end{equation*}
+Let us consider the case $r(x_0)<0$. From the above equation, this implies $r(x_0)<0 \implies f(x_0)(f'(x_2)-f'(x_1))<0$. In the case $f(x_0) > 0$, $f'(x_2)-f'(x_1) < 0 \implies f'(x_2) < f'(x_1)$. Similarly, if $f(x_0) < 0$, $f'(x_2)-f'(x_1) > 0 \implies f'(x_2) > f'(x_1)$. Let us consider the case that $\forall x \in (a, b), -\infty < f(x) < \infty$. This means there exists $x_3$ such that $|\lim_{x\to x_3} f(x)| = \infty, a < x_3 < b$. This violates the continuity of $f(x)$, where the mean value theorem does not exist. By another application of mean value theorem, there exists $a \le x_3 \le x_1 \le x_0 \le x_2 \le x_4 \le b$, $f'(x_1) = \frac{f(x_0)-f(x_3)}{x_0 - x_3}$ and $f'(x_2) = \frac{f(x_4)-f(x_0)}{x_4 - x_0}$. And since $f(x_0) < 0 \implies f'(x_2) > f'(x_1) \implies f(x_4) + f(x_3)\frac{x_4-x_0}{x_0-x_3}< f(x_0)\frac{x_4-x_3}{x_0-x_3}$. Similarly, $f(x_0) > 0 \implies f'(x_2) < f'(x_1) \implies f(x_4) + f(x_3)\frac{x_4-x_0}{x_0-x_3} > f(x_0)\frac{x_4-x_3}{x_0-x_3}$. This brings in the intuition that $f(x)$ is bounded.\\ \\
+Let us consider the case $r(x_0)>0$. From the above equation, this implies $r(x_0)>0 \implies f(x_0)(f'(x_2)-f'(x_1))>0$. All of the above similar reasoning lead to the fact that $f(x_0)>0 \implies f(x)$ is monotonically increasing and $f(x_0)<0 \implies f(x)$ is monotonically decreasing.
+\begin{thebibliography}{999}
+\bibitem{groebnerbasis}
+E. Mansfield, "Differential Gr\"obner bases", Ph.D. thesis, University of Sydney
+\bibitem{galoistheory}
+M. van der Put, "Galois theory and algorithms for linear differential equations", Journal of Symbolic Computation 39 (2005) 451-463
+\bibitem{navierstokes}
+C. L. Fefferman, "Existence and smoothness of the Navier-Stokes Equation", Clay Mathematics Institute
+\bibitem{geddes}
+K. O. Geddes, S. R. Czapor, G. Labahn, "Algorithms for Computer Algebra", Kluwer Academic Publishers, pp. 523-528 (1947)
+\bibitem{kovacic}
+J. J. Kovacic, "An Algorithm for Solving Second Linear Homogenous Differential Equations", Journal of Symbolic Computation (1986) 2, pp. 3-43
+\bibitem{wolfram}
+"Some Notes on Internal Implementation", Wolfram Language \& System Documentation Centre, URL: https://reference.wolfram.com/language/tutorial/SomeNotesOnInternalImplementation.html
+\bibitem{basset}
+A. Talaei, T. J. Garrett, "An analytical solution to the Navier-Stokes equation for incompressible flow around a solid sphere", submitted to the \textit{Physics of Fluids} (2020)
+\bibitem{exactSolution}
+A. Bertozzi and A. Majda, "Vorticity and Incompressible Flows", Cambridge U. Press, Cambridge, (2002).
+\bibitem{pala}
+Y. Pala, M. O. Ertas, "A New Analytical Method for Solving General Riccati Equation", Universal Journal of Applied Mathematics 5(2): 11-16, (2017)
+\bibitem{roshko}
+A. Roshko, "On the Development of Turbulent Wakes from vortex streets", National Advisory Committee for Aeronautics, Report 1191 (1954)
+\bibitem{naca0015}
+M. Sato, K. Asada, T. Nonomura, S. Kawai, K. Fujii, "Large Eddy Simulation of NACA 0015 Airfoil Flow at Reynolds Number of $1.6\times10^6$", AIAA Journal (American Institute of Aeronautics and Astronautics) (2016)
+\bibitem{lingxu}
+Ling Xu, "Numerical Study of viscous flow past a wedge", Journal of Fluid Mechanics, pp.150-165, (2016)
+\bibitem{dsamantaray}
+D. Samantaray, M. N. Das, "Nature of Turbulence inside a lid-driven cavity: Effect of Reynolds number ", International Journal of Fluid Mechanics, Vol. 80, (Dec 2019)
+\bibitem{southard}
+J. Southard, "Flow Past a Sphere at High Reynolds Numbers", Massachusetts Institute of Technology, https://geo.libretexts.org/@go/page/4807, (2021, March 5)
+\end{thebibliography}
+\end{document}
