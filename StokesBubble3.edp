@@ -1,0 +1,130 @@
+// Parameters
+
+verbosity = 0;
+
+// Material properties
+
+real mu = 1e-3; // Dynamic viscosity
+real Ts = 7.28e-2; // Surface tension
+
+// Geometry of the mesh
+
+real Dx = 0.100;
+real Dy = 0.050;
+real H  = 0.89;
+real cx0 = 1.1;
+real cy0 = H/2; // Center of cylinder
+int nn = 5;
+real t0 = 0.0; // Angle of attack
+func nx = Dy^2*x/sqrt(Dy^4*x^2+Dx^4*y^2);
+func ny = Dx^2*y/sqrt(Dy^4*x^2+Dx^4*y^2);
+func tx = Dx^2*y/sqrt(Dy^4*x^2+Dx^4*y^2);
+func ty = -Dy^2*x/sqrt(Dy^4*x^2+Dx^4*y^2);
+func kappa = Dx^2*Dy^2/sqrt(Dy^4*x^2+Dx^4*y^2);
+
+cout << "Angle of attack -> " << t0 << endl;
+
+// Boundary condition
+
+real k = 100; // Shear stress
+func U1 = k*(2*y-H)/2;
+func U2 = 0.;
+
+// Mesh
+
+border fr1(t=0, 2.2){x=t; y=0; label=1;}
+border fr2(t=0, H){x=2.2; y=t; label=2;}
+border fr3(t=2.2, 0){x=t; y=H; label=1;}
+border fr4(t=H, 0){x=0; y=t; label=1;}
+border fr5(t=2*pi, 0){x=cx0+Dx/2*sin(t)*cos(t0)-Dy/2*cos(t)*sin(t0); y=cy0+Dy/2*cos(t)*cos(t0)+Dx/2*sin(t)*sin(t0); label=3;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn) + fr5(-nn*3));
+
+// Fespace
+
+fespace Uh(Th, P1b);
+Uh u, v;
+Uh uu, vv;
+
+fespace Ph(Th, P1);
+Ph p, pp;
+
+fespace Wh(Th, [P1dc]);
+Wh w1, w2, w3, speed, pressure;
+
+// Problem
+solve stokes ([u, v, p], [uu, vv, pp])
+    = int2d(Th)(
+          mu*dx(u)*dx(uu)
+        + mu*dy(u)*dy(uu)
+        + mu*dx(v)*dx(vv)
+        + mu*dy(v)*dy(vv)
+        + dx(p)*uu
+        + dy(p)*vv
+    )
+    + int2d(Th)(u*dx(pp) + v*dy(pp))
+    - int2d(Th)(1000*p*pp)
+    + on(1, u=U1, v=U2);
+
+real[int] Dy1 = [0.001];
+real[int] Dy2 = [0.100];
+real eps = 5.e-3;
+func NormalCompo = (2*mu*dx(u)-p)*nx^2+2*mu*(dx(v)+dy(u))*nx*ny+(2*mu*dy(v)-p)*ny^2-Ts*kappa;
+func TangentCompo = (2*mu*dx(u)-p)*nx*tx+mu*(dx(v)+dy(u))*(nx*ty+tx*ny)+(2*mu*dy(v)-p)*ny*ty;
+cout << "Newton Raphson begins "<<endl;
+while(true){
+	real t1 = 2*randreal3()*pi;
+	cout << "Fixed value of Dx " << Dx << endl;
+	cout << "One end "<<Dy1[0]<<" Other end "<<Dy2[0]<<" Midpoint "<<(Dy1[0]+Dy2[0])/2<<endl;
+	Dy = (Dy1[0]+Dy2[0])/2;
+	stokes;
+	real fNMid = NormalCompo(cx0+Dx/2*sin(t1)*cos(t0)-Dy/2*cos(t1)*sin(t0), cy0+Dy/2*cos(t1)*cos(t0)+Dx/2*sin(t1)*sin(t0));
+	real fTMid = TangentCompo(cx0+Dx/2*sin(t1)*cos(t0)-Dy/2*cos(t1)*sin(t0), cy0+Dy/2*cos(t1)*cos(t0)+Dx/2*sin(t1)*sin(t0));
+	Dy = Dy1[0];
+	stokes;
+	real fN1 = NormalCompo(cx0+Dx/2*sin(t1)*cos(t0)-Dy/2*cos(t1)*sin(t0), cy0+Dy/2*cos(t1)*cos(t0)+Dx/2*sin(t1)*sin(t0));
+	real fT1 = TangentCompo(cx0+Dx/2*sin(t1)*cos(t0)-Dy/2*cos(t1)*sin(t0), cy0+Dy/2*cos(t1)*cos(t0)+Dx/2*sin(t1)*sin(t0));
+	Dy = Dy2[0];
+	stokes;
+	real fN2 = NormalCompo(cx0+Dx/2*sin(t1)*cos(t0)-Dy/2*cos(t1)*sin(t0), cy0+Dy/2*cos(t1)*cos(t0)+Dx/2*sin(t1)*sin(t0));
+	real fT2 = TangentCompo(cx0+Dx/2*sin(t1)*cos(t0)-Dy/2*cos(t1)*sin(t0), cy0+Dy/2*cos(t1)*cos(t0)+Dx/2*sin(t1)*sin(t0));
+	cout << "Values " << endl;
+	cout << "abs(fNMid) -> " << abs(fNMid) << endl;
+	cout << "abs(fTMid) -> " << abs(fTMid) << endl;
+	cout << "If fNMid*fN1 is negative -> " << (fNMid*fN1)<0 << endl;
+	cout << "If fTMid*fT1 is negative -> " << (fTMid*fT1)<0 << endl;
+	cout << "If fNMid*fN2 is negative -> " << (fNMid*fN2)<0 << endl;
+	cout << "If fTMid*fT2 is negative -> " << (fTMid*fT2)<0 << endl;
+	if ((abs(fNMid) < eps && abs(fTMid) < eps) || (abs(Dy2[0]-Dy1[0]) < eps)) break;
+	else{
+		if((fNMid*fN1)<0 && (fTMid*fT1)<0){
+			cout << "Entering the first conditional loop" << endl;
+			Dy2[0] = (Dy1[0]+Dy2[0])/2;
+		}
+		else{
+			if((fNMid*fN2)<0 && (fTMid*fT2)<0){
+				cout << "Entering the second conditional loop" << endl;
+				Dy1[0] = (Dy1[0]+Dy2[0])/2;
+			}
+			else{
+				cout << "Entering the third conditional loop" << endl;
+				real Dy3 = Dy1[0]; real Dy4 = Dy2[0];
+				cout << "Dy3 = "<<Dy3<<endl;
+				cout << "Dy4 = "<<Dy4<<endl;
+				Dy1[0] = Dy4;
+				Dy2[0] = 2*Dy4-Dy3;
+				cout << "New val of Dy1 = "<<Dy1[0]<<endl;
+				cout << "New val of Dy2 = "<<Dy2[0]<<endl;
+			}
+		}
+	}
+	cout << "New val of Dy1 = "<<Dy1[0]<<endl;
+	cout << "New val of Dy2 = "<<Dy2[0]<<endl;
+}
+
+Dy = (Dy1[0]+Dy2[0])/2;
+stokes;
+speed = 2*u/k/H;
+plot(speed, value = true, fill = true, nbiso = 20);
+// After working fixed theta, try of thinking of a scheme with changing theta as well ....
+// Multivariable bisection method ....
+

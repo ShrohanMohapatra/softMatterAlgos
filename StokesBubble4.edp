@@ -1,0 +1,102 @@
+// Parameters
+
+verbosity = 0;
+
+// Material properties
+
+real mu = 1e-3; // Dynamic viscosity
+real Ts = 0.01; // Surface tension
+
+// Geometry of the mesh
+
+real H  = 0.25;
+real cx0 = H/2;
+real cy0 = H/2; // Center of cylinder
+real A =  H/4; // Desired bubble size scale
+int nn = 15;
+
+// Boundary condition
+
+real k = 0.15; // Shear stress
+func U1 = k*(2*y-H)/2;
+
+// Mesh
+
+border fr1(t=0, H){x=t; y=0; label=1;}
+border fr2(t=0, H){x=H; y=t; label=2;}
+border fr3(t=H, 0){x=t; y=H; label=1;}
+border fr4(t=H, 0){x=0; y=t; label=1;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn));
+
+// Macro
+
+macro compoX(f) (dx(f)^2) //
+macro compoY(f) (dy(f)^2) //
+macro compoXY(f) (dx(f)*dy(f)) //
+macro compoF1(f) (dxx(f)*dy(f)^2/sqrt(dx(f)^2+dy(f)^2)) //
+macro compoF2(f) (dyy(f)*dx(f)^2/sqrt(dx(f)^2+dy(f)^2)) //
+macro compoF3(f) (dxy(f)*dx(f)*dy(f)/sqrt(dx(f)^2+dy(f)^2)) //
+
+// Fespace
+
+fespace Uh(Th, P1b);
+Uh u, v, uu, vv;
+
+fespace Ph(Th, P1);
+Ph p, pp, f, ff;
+
+fespace Wh(Th, [P1dc]);
+Wh uest, vest;
+
+cout << "Bubbly non-dimensional number = " << Ts/(mu*A*k) << endl;
+
+// Problem
+solve stokes ([u, v, p], [uu, vv, pp])
+	= int2d(Th)(
+		  mu*dx(u)*dx(uu)
+		+ mu*dy(u)*dy(uu)
+		+ mu*dx(v)*dx(vv)
+		+ mu*dy(v)*dy(vv)
+		+ dx(p)*uu
+		+ dy(p)*vv
+	)
+	+ int2d(Th) (pp*(dx(u)+dy(v)))
+	- int2d(Th) (p*pp*1.09)
+	+ on(1, u=U1, v=0);
+
+stokes;
+
+real eps = 3.e-7;
+real NormalComp = 1, TangenComp = 1;
+real scale = max(Ts/A, mu*k);
+int count = 50;
+uest = 2*u/k/H; vest = 2*v/k/H;
+
+// I am trying a quick Monte Carlo ...
+while( sqrt(NormalComp^2 + TangenComp^2)/scale > eps && count >=0){
+	cout << "Current value of bubble size " << A << endl;
+	cout << "Scale of measuring stress = " << scale << endl;
+	func F1 = sqrt((x-cx0)^2+(y-cy0)^2)*A;
+	solve bubbleShape(f, ff)
+	= int2d(Th) (
+		  u*ff*dx(f)
+		+ v*ff*dy(f)
+	) + on(1, f = F1);
+	bubbleShape;
+	plot(f, cmm="Function", wait = 0, nbiso = 40);
+	NormalComp = int2d(Th)(pp*(2*mu*dx(u)-p)*dx(f)^2/(dx(f)^2+dy(f)^2))
+				+int2d(Th)(2*mu*pp*(dx(v)+dy(u))*dx(f)*dy(f)/(dx(f)^2+dy(f)^2))
+				+int2d(Th)(pp*(2*mu*dy(v)-p)*dy(f)^2/(dx(f)^2+dy(f)^2))
+				+int2d(Th)(pp*Ts*(dx(f)^2*dyy(f)+dy(f)^2*dxx(f)-2*dx(f)*dy(f)*dxy(f))/(dx(f)^2+dy(f)^2)^(3/2));
+	TangenComp = int2d(Th)(ff*(2*dx(f)*dy(f)*(dx(u)-dy(v))+(dy(u)+dx(v))*(dy(f)^2-dx(f)^2))/(dx(f)^2+dy(f)^2));
+	cout << "Normal component = " << NormalComp << " Tangential component = " << TangenComp << endl;
+	A = H/4*(1+randreal3());
+	scale = max(Ts/A, mu*k);
+	count--;
+}
+
+real[int] isoVal = [0.01,1.45];
+
+plot(f, cmm="Function", value=true, viso = isoVal, wait = 1);
+
+// Think about more test functions ....

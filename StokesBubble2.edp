@@ -1,0 +1,74 @@
+// Parameters
+
+verbosity = 0;
+
+// Material properties
+
+real mu = 1e-3; // Dynamic viscosity
+real Ts = 7.28e-2; // Surface tension
+
+// Geometry of the mesh
+
+real Dx = 0.17;
+real Dy = 0.14;
+real H = 0.89;
+real cx0 = 1.1;
+real cy0 = H/2; // Center of cylinder
+int nn = 5;
+real t0 = pi/8; // Angle of attack
+func nx = Dy^2*x/sqrt(Dy^4*x^2+Dx^4*y^2);
+func ny = Dx^2*y/sqrt(Dy^4*x^2+Dx^4*y^2);
+
+cout << "Angle of attack -> " << t0 << endl;
+
+//Boundary condition
+
+real k = 1e-6; // Shear stress
+func U1 = k*abs(2*y-H)/2;
+func U2 = 0.;
+ 
+// Mesh
+
+border fr1(t=0, 2.2){x=t; y=0; label=1;}
+border fr2(t=0, H){x=2.2; y=t; label=2;}
+border fr3(t=2.2, 0){x=t; y=H; label=1;}
+border fr4(t=H, 0){x=0; y=t; label=1;}
+border fr5(t=2*pi, 0){x=cx0+Dx/2*sin(t)*cos(t0)-Dy/2*cos(t)*sin(t0); y=cy0+Dy/2*cos(t)*cos(t0)+Dx/2*sin(t)*sin(t0); label=3;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn) + fr5(-nn*3));
+
+// Fespace
+
+fespace Uh(Th, P1b);
+Uh u, v;
+Uh uu, vv;
+Uh bc1, bc2, b;
+
+fespace Ph(Th, P1);
+Ph p, pp, ppp;
+
+fespace Wh(Th, [P1dc]);
+Wh w1, w2, w3;
+
+// Macro
+
+macro grad(u) [dx(u), dy(u)] //
+macro viscousTerm1(u, v, uu, vv) (1/2*(dy(u)+dx(v))*(Dx^2/Dy^2*x/y-Dy^2/Dx^2*y/x)*(dx(uu)-dy(vv)))//
+macro viscousTerm2(u, v, uu, vv) (dy(u)*dy(uu)-dx(v)*dx(vv))//
+macro viscousTerm3(p, uu, vv) (p*(dx(uu)+dy(vv)))//
+macro viscousTerm4(u, v, uu, vv) (Dx^4*Dy^4/(Dy^4*x^2+Dx^4*y^2)^(1.5)*(dx(uu)+dy(vv)))//
+macro viscousTerm5(u, v, uu, vv) (1/2*(dy(u)+dx(v))*(Dx^2/Dy^2*x/y-Dy^2/Dx^2*y/x)*(Dy^2*x*uu-Dx^2*y*vv)/sqrt(Dy^4*x^2+Dx^4*y^2))//
+macro viscousTerm6(u, v, uu, vv) ((dy(u)*uu*Dx^2*y+dx(v)*vv*Dy^2*x)/sqrt(Dy^4*x^2+Dx^4*y^2))//
+macro viscousTerm7(u, v, uu, vv) (Dx^2*y*vv+Dy^2*x*uu)//
+macro viscousTerm8(u, v, uu, vv) ((dy(u)+dx(v))*(Dy^8*x^4+Dx^8*y^4)/(Dy^4*x^2+Dx^4*y^2)/(Dx^2*Dy^2*x*y))//
+macro viscousTerm9(u, v, uu, vv) (Dx^4*Dy^4/(Dy^4*x^2+Dx^4*y^2)^2)//
+
+// Problem
+
+varf stokes (u, v, p, uu, vv, pp, solver=sparsesolver)
+    = int2d(Th) (mu*viscousTerm1(u, v, uu, vv))
+    + int2d(Th) (mu*viscousTerm2(u, v, uu, vv))
+    + int2d(Th) (0.0001*p*pp)
+    + on(1, u=U1, v=U2);
+
+matrix A = stokes(Uh, Ph, solver=sparsesolver);
+

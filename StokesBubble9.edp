@@ -1,0 +1,406 @@
+// Parameters
+
+verbosity = 0;
+
+// Material properties
+
+real mu = 1e-3; // Dynamic viscosity
+real Ts = 7.28e-2; // Surface tension
+
+// Geometry of the mesh
+
+real H  = 500;
+real cx0 = H/2;
+real cy0 = H/2; // Center of cylinder
+real D = H/20;
+int nn = 15;
+
+// Scale non-dimensional number that decides shear stress
+
+real scale = 4.e+3;
+cout << "Bubbly non-dimensional number T/mu/a/k = " << scale << endl;
+real k = Ts/(scale*mu*D);
+cout << "Shear gradient = " << k << " Hz" << endl << endl;
+
+// Boundary condition functions
+
+func U1 = k*(y-cy0);
+func F1 = k*(y-cy0)^2/2;
+
+// Mesh
+
+border fr1(t=0, H){x=t; y=0; label=1;}
+border fr2(t=0, H){x=H; y=t; label=1;}
+border fr3(t=H, 0){x=t; y=H; label=1;}
+border fr4(t=H, 0){x=0; y=t; label=1;}
+border fr5(t=2*pi, 0){x=cx0+D*sin(t)/2; y=cy0+D*cos(t)/2; label=2;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn) + fr5(nn*3));
+
+// Fespace
+
+fespace Uh(Th, P2);
+Uh u, v, uu, vv;
+
+fespace Ph(Th, P1);
+Ph p, pp, psi, phi;
+
+fespace Wh(Th, [P1dc]);
+Wh normalComponent1, normalComponent2;
+
+// Problem
+solve stokes ([u, v, p, psi], [uu, vv, pp, phi])
+	= int2d(Th)(
+		  mu*dx(u)*dx(uu)
+		+ mu*dy(u)*dy(uu)
+		+ mu*dx(v)*dx(vv)
+		+ mu*dy(v)*dy(vv)
+		+ dx(p)*uu
+		+ dy(p)*vv
+	)
+	+ int2d(Th) (pp*(dx(u)+dy(v)))
+	+ int1d(Th, 1) (-p*pp*123)
+	+ int2d(Th)( dx(psi)*dx(phi) + dy(psi)*dy(phi) )
+	+ int2d(Th)( (dx(v)-dy(u))*phi )
+	+ on(1,psi=F1) + on(2, psi=F1)
+	+ on(1, u=U1, v=0);
+
+stokes;
+
+normalComponent1 = abs(2*mu*dxy(psi)*(dx(psi)^2-dy(psi)^2)/(dx(psi)^2+dy(psi)^2) - p + 2*mu*dx(psi)*dy(psi)*(dyy(psi)-dxx(psi))/(dx(psi)^2+dy(psi)^2) - Ts*(dy(psi)^2*dxx(psi)+dx(psi)^2*dyy(psi)-2*dx(psi)*dy(psi)*dxy(psi))/(dx(psi)^2+dy(psi)^2)^(3/2));
+
+// plot(psi, value = true, fill = true, wait = 1);
+
+// plot(normalComponent1, value = true, fill = true, wait = 1);
+
+int numOfPts = 250;
+real tolerance = 6.5e-20;
+
+real[int] FavourXcoors(numOfPts), FavourYcoors(numOfPts);
+int i = 0;
+int [int] lengthTrack = [0];
+real c = 4000.25;
+for (i = 0; i < numOfPts; i++){
+	real thetaPt = 2*randreal3()*pi;
+	real xPt = cx0 + 0.51*D*(cos(thetaPt)*(c^2+2)/(c^2+1)+c*sin(thetaPt)/(1+c^2));
+	real yPt = cy0 + 0.51*D*(c^2*sin(thetaPt)/(1+c^2)+c*cos(thetaPt)/(1+c^2));
+	cout <<"("<<xPt<<","<<yPt<<") -> "<< normalComponent1(xPt, yPt) < tolerance << endl;
+	if (normalComponent1(xPt, yPt) < tolerance){
+		FavourXcoors(lengthTrack(0)) = xPt;
+		FavourYcoors(lengthTrack(0)) = yPt;
+		lengthTrack(0) = lengthTrack(0) + 1;
+	}
+}
+
+real[int] FilterXcoors(lengthTrack(0)), FilterYcoors(lengthTrack(0));
+
+for (i = 0; i < lengthTrack(0); i++){
+	FilterXcoors(i) = FavourXcoors(i);
+	FilterYcoors(i) = FavourYcoors(i);
+}
+
+cout << endl;
+
+for (i = 0; i < lengthTrack(0); i++){
+	cout << "\t" << i+1 << ") (" <<FilterXcoors(i) << "," << FilterYcoors(i) << ")" << endl;
+}
+
+cout << endl;
+
+mesh Th2 = triangulate(FilterXcoors, FilterYcoors);
+plot(normalComponent1, Th2, value = true);
+
+
+// Try solving for phi(z) from psi(z, bar{z}) ....
+// Then show the zeroes, if there are more than one singularities ....
+
+// One test attempt on the strip along x-axis
+
+real deltaY = 1.4e-2; // Randomly choosing the infinitesimal thickness
+border frt1(t = 0, 1){x = t; y = 0;}
+border frt2(t = 0, deltaY){x = 1; y = t;}
+border frt3(t = 1, 0){x = t; y = deltaY;}
+border frt4(t = deltaY, 0){x = 0; y = t;}
+mesh Ref = buildmesh(frt1(4*nn)+frt2(nn)+frt3(4*nn)+frt4(nn));
+cout << "Integral test 1 with real function " << int2d(Ref)(x^2)/deltaY << endl;
+cout << "Integral test 1 with complex function " << int2d(Ref)(x^3+x*(0+3i))/deltaY << endl;
+
+// One test attempt on the strip along y-axis
+
+real deltaX = 1.4e-2;
+border fxt1(t = 0, deltaX) {x = t; y = 0;}
+border fxt2(t = 0, 1) {x = deltaX; y = t;}
+border fxt3(t = deltaX, 0) {x = t; y = 1;}
+border fxt4(t = 1, 0) {x = 0; y = t;}
+mesh Ref2 = buildmesh(fxt1(nn)+fxt2(4*nn)+fxt3(nn)+fxt4(4*nn));
+cout << "Integral test 2 with real function " << int2d(Ref2)(y^2)/deltaX << endl;
+cout << "Integral test 2 with complex function " << int2d(Ref2)(y^3+y*(0+3i))/deltaX << endl;
+
+func complex phi1(real x0, real y0){
+	real delta = 1.4e-2;
+	cout << " Checkpoint -> " << (x0<cx0 && y0<cy0 && y0!=0 && x0!=0 && x0!=cx0 && y0!=cy0) << endl;
+	if(x0>cx0 && y0>cy0 && x0!=H && y0!=H){
+		real x10 = x0 - delta;
+		real y10 = y0 - delta;
+		cout << "Branch 1" << endl;
+		border fx1(t = cx0, x10){x = t; y = cy0;}
+		border fx2(t = cy0, cy0+delta){x = x10; y = t;}
+		border fx3(t = x10, cx0){x = t; y = cy0+delta;}
+		border fx4(t = cy0+delta, cy0){x = cx0; y = t;}
+		mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+		border fy1(t = x10-delta, x10){x = t; y = cy0+delta;}
+		border fy2(t = cy0+delta, y10){x = x10; y = t;}
+		border fy3(t = x10, x10-delta){x = t; y = y10;}
+		border fy4(t = y10, cy0+delta){x = x10-delta; y = t;}
+		mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+		complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+		complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+		return -0.25*(int1+int2)/delta;
+	}
+	else{
+		if(x0>cx0 && y0<cy0 && y0!=0 && x0!=H){
+			real x10 = x0 - delta;
+			real y10 = y0 + delta;
+			cout << "Branch 2 " << x10 << " " << y10 << endl;
+			border fx1(t = cx0, x10){x = t; y = cy0-delta;}
+			border fx2(t = cy0-delta, cy0){x = x10; y = t;}
+			border fx3(t = x10, cx0){x = t; y = cy0;}
+			border fx4(t = cy0, cy0-delta){x = cx0; y = t;}
+			mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+			border fy1(t = x10-delta, x10){x = t; y = y10;}
+			border fy2(t = y10, cy0-delta){x = x10; y = t;}
+			border fy3(t = x10, x10-delta){x = t; y = cy0-delta;}
+			border fy4(t = cy0-delta, y10){x = x10-delta; y = t;}
+			mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+			complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+			complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+			return -0.25*(int1+int2)/delta;
+		}
+		else{
+			if(x0<cx0 && y0<cy0 && y0!=0 && x0!=0 && x0!=cx0 && y0!=cy0){
+				real x10 = x0 - delta;
+				real y10 = y0 - delta;
+				cout << "Branch 3 " << x10 << " " << y10 << endl;
+				border fx1(t = x10, cx0){x = t; y = cy0-delta;}
+				border fx2(t = cy0-delta, cy0){x = cx0; y = t;}
+				border fx3(t = cx0, x10){x = t; y = cy0;}
+				border fx4(t = cy0, cy0-delta){x = x10; y = t;}
+				mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+				border fy1(t = x10, x10+delta){x = t; y = y10;}
+				border fy2(t = y10, cy0-delta){x = x10+delta; y = t;}
+				border fy3(t = x10+delta, x10){x = t; y = cy0-delta;}
+				border fy4(t = cy0-delta, y10){x = x10; y = t;}
+				mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+				complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+				complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+				return -0.25*(int1+int2)/delta;
+			}
+			else{
+				if(x0<cx0 && y0>cy0 && y0!=H && x0!=0 && x0!=cx0 && y0!=cy0){
+					real x10 = x0 - delta;
+					real y10 = y0 - delta;
+					cout << "Branch 4 " << x10 << " " << y10 << endl;
+					border fx1(t = x10, cx0){x = t; y = cy0;}
+					border fx2(t = cy0, cy0+delta){x = cx0; y = t;}
+					border fx3(t = cx0, x10){x = t; y = cy0+delta;}
+					border fx4(t = cy0+delta, cy0){x = x10; y = t;}
+					mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+					border fy1(t = x10, x10+delta){x = t; y = cy0+delta;}
+					border fy2(t = cy0+delta, y10){x = x10+delta; y = t;}
+					border fy3(t = x10+delta, x10){x = t; y = y10;}
+					border fy4(t = y10, cy0+delta){x = x10; y = t;}
+					mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+					complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+					complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+					return -0.25*(int1+int2)/delta;
+				}
+				else{
+					if(x0<cx0 && y0 == 0){
+						real x10 = x0;
+						real y10 = 0;
+						cout << "Branch 5 " << x10 << " " << y10 << endl;
+						border fx1(t = x10, cx0){x = t; y = 0;}
+						border fx2(t = 0, delta){x = cx0; y = t;}
+						border fx3(t = cx0, x10){x = t; y = delta;}
+						border fx4(t = delta, 0){x = x10; y = t;}
+						mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+						border fy1(t = cx0-delta, cx0){x = t; y = delta;}
+						border fy2(t = delta, cy0){x = cx0; y = t;}
+						border fy3(t = cx0, cx0-delta){x = t; y = cy0;}
+						border fy4(t = cy0, delta){x = cx0-delta; y = t;}
+						mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+						complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+						complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+						return -0.25*(int1+int2)/delta;
+					}
+					else{
+						if(x0>cx0 && x<H && y0 == 0 && x0!=cx0){
+							real x10 = x0 + delta;
+							real y10 = 0;
+							cout << "Branch 6 " << x10 << " " << y10 << endl;
+							border fx1(t = cx0, x10){x = t; y = 0;}
+							border fx2(t = 0, delta){x = x10; y = t;}
+							border fx3(t = x10, cx0){x = t; y = delta;}
+							border fx4(t = delta, 0){x = cx0; y = t;}
+							mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+							border fy1(t = cx0, cx0+delta){x = t; y = delta;}
+							border fy2(t = delta, cy0){x = cx0+delta; y = t;}
+							border fy3(t = cx0+delta, cx0){x = t; y = cy0;}
+							border fy4(t = cy0, delta){x = cx0; y = t;}
+							mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+							complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+							complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+							return -0.25*(int1+int2)/delta;
+						}
+						else{
+							if(x0==H && y0 < cy0 && y0!=cy0){
+								real x10 = H;
+								real y10 = y0*0.99;
+								cout << "Branch 7 " << x10 << " " << y10 << endl;
+								border fx1(t = cx0, x10){x = t; y = cy0-delta;}
+								border fx2(t = cy0-delta, cy0){x = x10; y = t;}
+								border fx3(t = x10, cx0){x = t; y = cy0;}
+								border fx4(t = cy0, cy0-delta){x = cx0; y = t;}
+								mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+								border fy1(t = x10-delta, x10){x = t; y = y10;}
+								border fy2(t = y10, cy0-delta){x = x10; y = t;}
+								border fy3(t = x10, x10-delta){x = t; y = cy0-delta;}
+								border fy4(t = cy0-delta, y10){x = x10-delta; y = t;}
+								mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+								complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+								complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+								return -0.25*(int1+int2)/delta;
+							}
+							else{
+								if(x0==H && y0 > cy0 && y0!=cy0){
+									real x10 = H;
+									real y10 = y0*0.99;
+									cout << "Branch 8 " << x10 << " " << y10 << endl;
+									border fx1(t = cx0, x10){x = t; y = cy0;}
+									border fx2(t = cy0, cy0+delta){x = x10; y = t;}
+									border fx3(t = x10, cx0){x = t; y = cy0+delta;}
+									border fx4(t = cy0+delta, cy0){x = cx0; y = t;}
+									mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+									border fy1(t = x10-delta, x10){x = t; y = cy0+delta;}
+									border fy2(t = cy0+delta, y10){x = x10; y = t;}
+									border fy3(t = x10, x10-delta){x = t; y = y10;}
+									border fy4(t = y10, cy0+delta){x = x10-delta; y = t;}
+									mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+									complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+									complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+									return -0.25*(int1+int2)/delta;
+								}
+								else{
+									if(x0 > cx0 && y0 == H && x0!=cx0){
+										real x10 = x0*0.99;
+										real y10 = H;
+										cout << "Branch 9 " << x10 << " " << y10 << endl;
+										border fx1(t = cx0, x10){x = t; y = y10-delta;}
+										border fx2(t = y10-delta, y10){x = x10; y = t;}
+										border fx3(t = x10, cx0){x = t; y = y10;}
+										border fx4(t = y10, y10-delta){x = cx0; y = t;}
+										mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+										border fy1(t = cx0, cx0+delta){x = t; y = cy0;}
+										border fy2(t = cy0, y10-delta){x = cx0+delta; y = t;}
+										border fy3(t = cx0+delta, cx0){x = t; y = y10-delta;}
+										border fy4(t = y10-delta, cy0){x = cx0; y = t;}
+										mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+										complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+										complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+										return -0.25*(int1+int2)/delta;
+									}
+									else{
+										if(x0 < cx0 && y0 == H && x0!=cx0){
+											real x10 = x0*0.99;
+											real y10 = H;
+											cout << "Branch 10 " << x10 << " " << y10 << endl;
+											border fx1(t = x10, cx0){x = t; y = y10-delta;}
+											border fx2(t = y10-delta, y10){x = cx0; y = t;}
+											border fx3(t = cx0, x10){x = t; y = y10;}
+											border fx4(t = y10, y10-delta){x = x10; y = t;}
+											mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+											border fy1(t = cx0-delta, cx0){x = t; y = cy0;}
+											border fy2(t = cy0, y10-delta){x = cx0; y = t;}
+											border fy3(t = cx0, cx0-delta){x = t; y = y10-delta;}
+											border fy4(t = y10-delta, cy0){x = cx0-delta; y = t;}
+											mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+											complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+											complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+											return -0.25*(int1+int2)/delta;
+										}
+										else{
+											if(x0 == 0 && y0 > cy0 && y0!=cy0){
+												real x10 = 0;
+												real y10 = y0*0.99;
+												cout << "Branch 11 " << x10 << " " << y10 << endl;
+												border fx1(t = 0, cx0){x = t; y = cy0;}
+												border fx2(t = cy0, cy0+delta){x = cx0; y = t;}
+												border fx3(t = cx0, 0){x = t; y = cy0+delta;}
+												border fx4(t = cy0+delta, cy0){x = 0; y = t;}
+												mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+												border fy1(t = 0, delta){x = t; y = cy0;}
+												border fy2(t = cy0, y10){x = delta; y = t;}
+												border fy3(t = delta, 0){x = t; y = y10;}
+												border fy4(t = y10, cy0){x = x10; y = t;}
+												mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+												complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+												complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+												return -0.25*(int1+int2)/delta;
+											}
+											else{
+												if(x0 == 0 && y0 < cy0 && y0!=cy0){
+													real x10 = 0;
+													real y10 = y0;
+													cout << "Branch 12 " << x10 << " " << y10 << endl;
+													border fx1(t = 0, cx0){x = t; y = cy0-delta;}
+													border fx2(t = cy0-delta, cy0){x = cx0; y = t;}
+													border fx3(t = cx0, 0){x = t; y = cy0;}
+													border fx4(t = cy0, cy0-delta){x = 0; y = t;}
+													mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+													border fy1(t = 0, delta){x = t; y = y10;}
+													border fy2(t = y10, cy0+delta){x = delta; y = t;}
+													border fy3(t = delta, 0){x = t; y = cy0+delta;}
+													border fy4(t = cy0+delta, y10){x = x10; y = t;}
+													mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+													complex int1 = int2d(Ref1)(dx(v)-dy(u)+(0+1i)*p/mu);
+													complex int2 = int2d(Ref2)((0+1i)*(dx(v)-dy(u))-p/mu);
+													return -0.25*(int1+int2)/delta;
+												}
+												else{
+													if(x0==cx0 && y0 == cy0) return 0;
+													return 0.3+0.4i;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+int n1 = Th.nv;
+real[int] xPointList(n1);
+real[int] yPointList(n1);
+real[int] funcList(n1);
+
+for(int i=0;i<n1;i++){
+	xPointList(i) = Th(i).x;
+	yPointList(i) = Th(i).y;
+	cout << i << ") phi1("<<Th(i).x<<","<<Th(i).y<<") = "<<abs(phi1(Th(i).x,Th(i).y)) << endl;
+	funcList(i) = abs(phi1(Th(i).x,Th(i).y));
+}
+
+{
+	ofstream fileStream("StokesBubble03.txt");
+	for(int i=0;i<n1;i++){
+		cout << i << " -> " << endl;
+		fileStream << xPointList(i) << " " << yPointList(i) << " " << funcList(i) << endl;
+		fileStream.flush;
+	}
+}
+
+

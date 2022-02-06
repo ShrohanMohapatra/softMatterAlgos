@@ -1,0 +1,16 @@
+real delta = 1.4e-3;
+real x0 = 9;
+real y0 = 8;
+int nn = 10;
+border fx1(t = 0, x0){x = t; y = 0;}
+border fx2(t = 0, delta){x = x0; y = t;}
+border fx3(t = x0, 0){x = t; y = delta;}
+border fx4(t = delta, 0){x = 0; y = t;}
+mesh Ref1 = buildmesh(fx1(4*nn)+fx2(nn)+fx3(4*nn)+fx4(nn));
+border fy1(t = x0-delta, x0){x = t; y = delta;}
+border fy2(t = delta, y0){x = x0; y = t;}
+border fy3(t = x0, x0-delta){x = t; y = y0;}
+border fy4(t = y0, delta){x = x0-delta; y = t;}
+mesh Ref2 = buildmesh(fy1(nn)+fy2(4*nn)+fy3(nn)+fy4(4*nn));
+plot(Ref1, Ref2);
+

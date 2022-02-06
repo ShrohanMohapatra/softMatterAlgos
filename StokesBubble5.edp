@@ -1,0 +1,107 @@
+// Parameters
+
+verbosity = 0;
+
+// Material properties
+
+real mu = 1e-3; // Dynamic viscosity
+real Ts = 7.28e-2; // Surface tension
+
+// Geometry of the mesh
+
+real H  = 500;
+real cx0 = H/2;
+real cy0 = H/2; // Center of cylinder
+real D = H/20;
+int nn = 15;
+
+// Scale non-dimensional number that decides shear stress
+
+real scale = 5.e+6;
+cout << "Bubbly non-dimensional number T/mu/a/k = " << scale << endl;
+real k = Ts/(scale*mu*D);
+cout << "Shear gradient = " << k << " Hz" << endl << endl;
+
+// Boundary condition functions
+
+func U1 = k*(y-cy0);
+func F1 = k*(y-cy0)^2/2;
+
+// Mesh
+
+border fr1(t=0, H){x=t; y=0; label=1;}
+border fr2(t=0, H){x=H; y=t; label=1;}
+border fr3(t=H, 0){x=t; y=H; label=1;}
+border fr4(t=H, 0){x=0; y=t; label=1;}
+border fr5(t=2*pi, 0){x=cx0+D*sin(t)/2; y=cy0+D*cos(t)/2; label=2;}
+mesh Th = buildmesh(fr1(5*nn) + fr2(nn) + fr3(5*nn) + fr4(nn) + fr5(nn*3));
+
+// Fespace
+
+fespace Uh(Th, P2);
+Uh u, v, uu, vv;
+
+fespace Ph(Th, P1);
+Ph p, pp, psi, phi;
+
+fespace Wh(Th, [P1dc]);
+Wh normalComponent1, normalComponent2;
+
+// Problem
+solve stokes ([u, v, p, psi], [uu, vv, pp, phi])
+	= int2d(Th)(
+		  mu*dx(u)*dx(uu)
+		+ mu*dy(u)*dy(uu)
+		+ mu*dx(v)*dx(vv)
+		+ mu*dy(v)*dy(vv)
+		+ dx(p)*uu
+		+ dy(p)*vv
+	)
+	+ int2d(Th) (pp*(dx(u)+dy(v)))
+	+ int1d(Th, 1) (-p*pp*123)
+	+ int2d(Th)( dx(psi)*dx(phi) + dy(psi)*dy(phi) )
+	+ int2d(Th)( (dx(v)-dy(u))*phi )
+	+ on(1,psi=F1) + on(2, psi=F1)
+	+ on(1, u=U1, v=0);
+
+stokes;
+
+normalComponent1 = abs(2*mu*dxy(psi)*(dx(psi)^2-dy(psi)^2)/(dx(psi)^2+dy(psi)^2) - p + 2*mu*dx(psi)*dy(psi)*(dyy(psi)-dxx(psi))/(dx(psi)^2+dy(psi)^2) - Ts*(dy(psi)^2*dxx(psi)+dx(psi)^2*dyy(psi)-2*dx(psi)*dy(psi)*dxy(psi))/(dx(psi)^2+dy(psi)^2)^(3/2));
+
+plot(psi, value = true, fill = true, wait = 1);
+
+plot(normalComponent1, value = true, fill = true, wait = 1);
+
+int numOfPts = 120;
+real tolerance = 6.e-23;
+
+real[int] FavourXcoors(numOfPts), FavourYcoors(numOfPts);
+int i = 0;
+int [int] lengthTrack = [0];
+for (i = 0; i < numOfPts; i++){
+	real xPt = cx0 + (2*randreal3()-1)*1.09*D;
+	real yPt = cy0 + (2*randreal3()-1)*1.09*D;
+	cout << "("<<xPt<<","<<yPt<<") -> " << normalComponent1(xPt, yPt) < tolerance << " with " << sqrt((xPt-cx0)^2+(yPt-cy0)^2) < 1.50*D/2 << endl;
+	if (normalComponent1(xPt, yPt) < tolerance && sqrt((xPt-cx0)^2+(yPt-cy0)^2) < 1.50*D/2){
+		FavourXcoors(lengthTrack(0)) = xPt;
+		FavourYcoors(lengthTrack(0)) = yPt;
+		lengthTrack(0) = lengthTrack(0) + 1;
+	}
+}
+
+real[int] FilterXcoors(lengthTrack(0)), FilterYcoors(lengthTrack(0));
+
+for (i = 0; i < lengthTrack(0); i++){
+	FilterXcoors(i) = FavourXcoors(i);
+	FilterYcoors(i) = FavourYcoors(i);
+}
+
+cout << endl;
+for (i = 0; i < lengthTrack(0); i++){
+	cout << "\t" << i+1 << ") (" <<FilterXcoors(i) << "," << FilterYcoors(i) << ")" << endl;
+}
+
+cout << endl;
+Th = triangulate(FilterXcoors, FilterYcoors);
+plot(Th, value = true, wait = 1);
+plot(normalComponent1, Th, value = true);
